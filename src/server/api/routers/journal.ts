@@ -77,4 +77,30 @@ export const journalRouter = createTRPCRouter({
 
       return logs;
     }),
+
+  getMonthlyStats: protectedProcedure
+    .input(z.object({ year: z.number(), month: z.number() }))
+    .query(async ({ ctx, input }) => {
+      // month is 0-indexed in JS Date, but input might be 0-11
+      const start = new Date(input.year, input.month, 1);
+      const end = new Date(input.year, input.month + 1, 0, 23, 59, 59, 999);
+
+      const logs = await ctx.db.dayLog.findMany({
+        where: {
+          userId: ctx.session.user.id,
+          date: {
+            gte: start,
+            lte: end,
+          },
+        },
+        select: {
+          date: true,
+          productivityScore: true,
+          mood: true,
+          content: true,
+        },
+      });
+
+      return logs;
+    }),
 });

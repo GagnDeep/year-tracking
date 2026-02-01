@@ -1,8 +1,7 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useRef } from "react";
 import { format, parse, isValid, getDaysInMonth, startOfMonth, differenceInDays } from "date-fns";
-import { notFound } from "next/navigation";
 import { api } from "@/trpc/react";
 import { DailyJournal } from "@/components/editor/daily-journal";
 import { useDebounce } from "@/hooks/use-debounce";
@@ -10,16 +9,16 @@ import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useLayout } from "@/context/layout-context";
+import { gsap } from "gsap";
 
 export default function DayView({ date }: { date: string }) {
   // 1. Validate Date
   const parsedDate = parse(date, "yyyy-MM-dd", new Date());
-  if (!isValid(parsedDate)) return <div>Invalid date</div>;
-
-  const formattedDate = format(parsedDate, "EEEE, MMMM do, yyyy");
+  const formattedDate = isValid(parsedDate) ? format(parsedDate, "EEEE, MMMM do, yyyy") : "Invalid Date";
 
   // 2. Fetch Data
-  const { data: entry, isLoading, refetch } = api.journal.getEntry.useQuery({ date });
+  const { data: entry, isLoading } = api.journal.getEntry.useQuery({ date }, { enabled: isValid(parsedDate) });
   const utils = api.useUtils();
   const upsertMutation = api.journal.upsertEntry.useMutation({
       onSuccess: () => {
@@ -41,7 +40,6 @@ export default function DayView({ date }: { date: string }) {
       setMood(entry.mood ?? "neutral");
       setIsInitialized(true);
     } else if (!isLoading && !entry && !isInitialized) {
-        // No entry yet
         setIsInitialized(true);
     }
   }, [entry, isLoading, isInitialized]);
@@ -53,20 +51,12 @@ export default function DayView({ date }: { date: string }) {
 
   useEffect(() => {
     if (!isInitialized) return;
-
-    // Only save if dirty? Or just save everything.
-    // To prevent overwrite on initial load, we rely on isInitialized.
-    // Also, if nothing changed from DB, we might skip, but checking against DB is complex.
-    // For now, simple auto-save on debounce.
-
-    // Check if data is actually different from what we loaded?
-    // Optimization: Skip if matches entry exactly.
     const isDifferent =
         content !== (entry?.content ?? "") ||
         productivityScore !== (entry?.productivityScore ?? 5) ||
         mood !== (entry?.mood ?? "neutral");
 
-    if (isDifferent) {
+    if (isDifferent && isValid(parsedDate)) {
         upsertMutation.mutate({
             date,
             content: debouncedContent,
@@ -74,23 +64,61 @@ export default function DayView({ date }: { date: string }) {
             mood: debouncedMood,
         });
     }
-
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedContent, debouncedScore, debouncedMood]);
-  // We use debounced values to trigger, but we could also use the raw values if we just want to save "current state" when debounce fires.
-  // Actually, passing `debouncedContent` ensures we save the settled value.
 
-  // 6. Day Stats Calculation
+  // 6. Animation Logic
+  const { transitionRect, setTransitionRect } = useLayout();
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (transitionRect && containerRef.current) {
+        const target = containerRef.current;
+        const targetRect = target.getBoundingClientRect();
+
+        const rectCX = transitionRect.left + transitionRect.width / 2;
+        const rectCY = transitionRect.top + transitionRect.height / 2;
+
+        const targetCX = targetRect.left + targetRect.width / 2;
+        const targetCY = targetRect.top + targetRect.height / 2;
+
+        const dx = rectCX - targetCX;
+        const dy = rectCY - targetCY;
+
+        gsap.fromTo(target,
+            {
+                x: dx,
+                y: dy,
+                scale: 0.05,
+                opacity: 0,
+            },
+            {
+                x: 0,
+                y: 0,
+                scale: 1,
+                opacity: 1,
+                duration: 0.6,
+                ease: "expo.out",
+                onComplete: () => {
+                    setTransitionRect(null);
+                }
+            }
+        );
+    }
+  }, [transitionRect, setTransitionRect]);
+
+  if (!isValid(parsedDate)) return <div>Invalid date</div>;
+  if (isLoading) return <div className="p-8">Loading...</div>;
+
+  // Day Stats
   const monthStart = startOfMonth(parsedDate);
   const daysInMonth = getDaysInMonth(parsedDate);
   const daysPassed = differenceInDays(parsedDate, monthStart) + 1;
   const monthProgress = ((daysPassed / daysInMonth) * 100).toFixed(0);
   const monthName = format(parsedDate, "MMM");
 
-  if (isLoading) return <div className="p-8">Loading...</div>;
-
   return (
-    <div className="flex flex-col gap-6 h-full">
+    <div ref={containerRef} className="flex flex-col gap-6 h-full">
       {/* Header */}
       <div className="flex items-center justify-between border-b border-neutral-800 pb-4">
         <div>

@@ -2,13 +2,17 @@
 
 import { useMemo } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { eachDayOfInterval, startOfYear, endOfYear, isSameDay, isBefore, format } from "date-fns";
 import { useChronos } from "@/hooks/use-chronos";
 import { api } from "@/trpc/react";
+import { useLayout } from "@/context/layout-context";
 
 export default function DashboardPage() {
   const { now, loading } = useChronos();
   const year = now ? now.getFullYear() : new Date().getFullYear();
+  const { setTransitionRect } = useLayout();
+  const router = useRouter();
 
   // Fetch yearly stats
   const { data: yearlyStats } = api.journal.getYearlyStats.useQuery(
@@ -35,6 +39,13 @@ export default function DashboardPage() {
     const end = endOfYear(targetDate);
     return eachDayOfInterval({ start, end });
   }, [now]);
+
+  const handleDayClick = (e: React.MouseEvent, dateStr: string) => {
+    e.preventDefault();
+    const rect = e.currentTarget.getBoundingClientRect();
+    setTransitionRect(rect);
+    router.push(`/dashboard/day/${dateStr}`);
+  };
 
   if (loading) return <div className="p-4">Loading grid...</div>;
 
@@ -68,6 +79,7 @@ export default function DashboardPage() {
             <Link
               key={dateString}
               href={`/dashboard/day/${dateString}`}
+              onClick={(e) => handleDayClick(e, dateString)}
               title={`${dateString}${score !== undefined ? ` - Score: ${score}` : ""}`}
               className={`
                 h-4 w-4 rounded-sm border transition-all hover:scale-125
