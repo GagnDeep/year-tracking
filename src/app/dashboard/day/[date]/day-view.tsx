@@ -11,6 +11,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useLayout } from "@/context/layout-context";
 import { gsap } from "gsap";
+import { Timeline } from "@/components/timeline/timeline";
+import { calculateDailyStats, TimeBlock } from "@/lib/scheduler";
+import { toast } from "sonner";
 
 export default function DayView({ date }: { date: string }) {
   // 1. Validate Date
@@ -19,10 +22,22 @@ export default function DayView({ date }: { date: string }) {
 
   // 2. Fetch Data
   const { data: entry, isLoading } = api.journal.getEntry.useQuery({ date }, { enabled: isValid(parsedDate) });
+  const { data: blocks, refetch: refetchBlocks } = api.timeline.getBlocks.useQuery({ date }, { enabled: isValid(parsedDate) });
+
   const utils = api.useUtils();
-  const upsertMutation = api.journal.upsertEntry.useMutation({
+
+  const journalMutation = api.journal.upsertEntry.useMutation({
       onSuccess: () => {
           utils.journal.getYearlyStats.invalidate();
+      }
+  });
+
+  const timelineMutation = api.timeline.upsertBlock.useMutation({
+      onSuccess: () => {
+          refetchBlocks();
+      },
+      onError: (err) => {
+          toast.error(err.message);
       }
   });
 
@@ -57,7 +72,7 @@ export default function DayView({ date }: { date: string }) {
         mood !== (entry?.mood ?? "neutral");
 
     if (isDifferent && isValid(parsedDate)) {
-        upsertMutation.mutate({
+        journalMutation.mutate({
             date,
             content: debouncedContent,
             productivityScore: debouncedScore,
@@ -117,6 +132,48 @@ export default function DayView({ date }: { date: string }) {
   const monthProgress = ((daysPassed / daysInMonth) * 100).toFixed(0);
   const monthName = format(parsedDate, "MMM");
 
+  // Timeline Stats
+  const timelineStats = calculateDailyStats((blocks || []).map(b => ({
+      ...b,
+      startTime: new Date(b.startTime), // Ensure Date object
+      endTime: new Date(b.endTime)
+  })));
+
+  const handleBlockMove = (id: string, newStartTime: Date) => {
+      const block = blocks?.find(b => b.id === id);
+      if (!block) return;
+
+      const durationMs = block.endTime.getTime() - block.startTime.getTime();
+      const newEndTime = new Date(newStartTime.getTime() + durationMs);
+
+      // Update date part to match current day (prevent dragging to another day visually)
+      newStartTime.setFullYear(parsedDate.getFullYear(), parsedDate.getMonth(), parsedDate.getDate());
+      newEndTime.setFullYear(parsedDate.getFullYear(), parsedDate.getMonth(), parsedDate.getDate());
+
+      timelineMutation.mutate({
+          id,
+          date,
+          startTime: newStartTime.toISOString(),
+          endTime: newEndTime.toISOString(),
+          category: block.category,
+          title: block.title,
+      });
+  };
+
+  const handleBlockCreate = (startTime: Date) => {
+      // Set correct date
+      startTime.setFullYear(parsedDate.getFullYear(), parsedDate.getMonth(), parsedDate.getDate());
+      const endTime = new Date(startTime.getTime() + 60 * 60 * 1000); // 1 hour default
+
+      timelineMutation.mutate({
+          date,
+          startTime: startTime.toISOString(),
+          endTime: endTime.toISOString(),
+          category: "Work", // Default
+          title: "New Task",
+      });
+  };
+
   return (
     <div ref={containerRef} className="flex flex-col gap-6 h-full">
       {/* Header */}
@@ -128,18 +185,51 @@ export default function DayView({ date }: { date: string }) {
           </p>
         </div>
         <div className="text-sm text-neutral-500">
-           {upsertMutation.isPending ? "Saving..." : "Saved"}
+           {journalMutation.isPending ? "Saving..." : "Saved"}
         </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 flex-1 min-h-0">
         {/* Editor */}
-        <div className="lg:col-span-3 flex flex-col min-h-0">
+        <div className="lg:col-span-2 flex flex-col min-h-0 gap-4">
           <DailyJournal
             content={content}
             onChange={setContent}
-            isSaving={upsertMutation.isPending}
+            isSaving={journalMutation.isPending}
           />
+
+          <Card className="bg-neutral-900 border-neutral-800">
+            <CardHeader>
+                <CardTitle className="text-sm">Day Stats</CardTitle>
+            </CardHeader>
+            <CardContent className="text-xs space-y-1 text-neutral-400">
+                <div className="flex justify-between">
+                    <span>Scheduled:</span>
+                    <span className="text-white">{timelineStats.totalScheduled.toFixed(1)}h</span>
+                </div>
+                <div className="flex justify-between">
+                    <span>Free:</span>
+                    <span className="text-white">{timelineStats.totalFree.toFixed(1)}h</span>
+                </div>
+                <div className="pt-2 border-t border-neutral-800 mt-2">
+                    {Object.entries(timelineStats.byCategory).map(([cat, dur]) => (
+                        <div key={cat} className="flex justify-between">
+                            <span>{cat}:</span>
+                            <span>{dur.toFixed(1)}h</span>
+                        </div>
+                    ))}
+                </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Timeline */}
+        <div className="lg:col-span-1 h-[600px] lg:h-auto overflow-y-auto border border-neutral-800 rounded-lg bg-neutral-950">
+            <Timeline
+                blocks={blocks || []}
+                onBlockMove={handleBlockMove}
+                onBlockCreate={handleBlockCreate}
+            />
         </div>
 
         {/* Sidebar */}

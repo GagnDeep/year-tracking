@@ -72,6 +72,7 @@ export const journalRouter = createTRPCRouter({
         select: {
           date: true,
           productivityScore: true,
+          mood: true,
         },
       });
 
