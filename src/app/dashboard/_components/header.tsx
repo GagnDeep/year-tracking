@@ -3,7 +3,7 @@
 import { useChronos } from "@/hooks/use-chronos";
 import { Progress } from "@/components/ui/progress";
 import { SidebarTrigger } from "@/components/ui/sidebar";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { useLayout } from "@/context/layout-context";
@@ -25,53 +25,56 @@ export function Header() {
 
   return (
     <header className={cn(
-        "sticky top-0 z-10 flex items-center gap-4 border-b border-neutral-800 bg-neutral-950/80 p-4 backdrop-blur-md transition-all duration-500",
-        focusMode && "border-transparent bg-transparent py-8"
+        "sticky top-0 z-10 flex items-center gap-4 border-b border-border bg-background/80 p-4 backdrop-blur-md transition-all duration-500",
+        focusMode && "border-transparent bg-transparent py-8 pointer-events-none"
     )}>
       <div className={cn(
-          "transition-all duration-300 overflow-hidden",
+          "transition-all duration-300 overflow-hidden pointer-events-auto",
           focusMode ? "w-0 opacity-0" : "w-auto opacity-100"
       )}>
-        <SidebarTrigger />
+        <SidebarTrigger className="-ml-1" />
       </div>
 
-      <div className="flex flex-1 flex-col gap-1 transition-all duration-500">
-        <div className="flex items-center justify-between text-sm">
+      <div className={cn(
+          "flex flex-1 flex-col gap-1 transition-all duration-500 pointer-events-auto",
+          focusMode && "max-w-2xl mx-auto text-center items-center"
+      )}>
+        <div className="flex items-center justify-between text-sm w-full">
           <span className={cn(
-              "font-medium text-neutral-200 transition-all duration-500",
+              "font-medium text-muted-foreground transition-all duration-500",
               focusMode && "text-lg opacity-80"
           )}>Year Progress</span>
           <span className={cn(
-              "font-mono text-neutral-400 transition-all duration-500 tabular-nums",
-              focusMode && "text-5xl text-white font-bold"
+              "font-mono text-muted-foreground transition-all duration-500 tabular-nums tracking-tight",
+              focusMode && "text-5xl text-foreground font-bold"
           )}>{loading ? "..." : `${yearProgress}%`}</span>
         </div>
         <Progress value={loading ? 0 : parseFloat(yearProgress)} className={cn(
-            "h-2 bg-neutral-800 transition-all duration-500",
-            focusMode && "h-1 opacity-50"
+            "h-2 bg-secondary transition-all duration-500",
+            focusMode && "h-1 opacity-50 w-full"
         )} />
       </div>
 
       <div className={cn(
-          "flex items-center gap-4 transition-all duration-300",
+          "flex items-center gap-4 transition-all duration-300 pointer-events-auto",
           focusMode ? "w-0 opacity-0 overflow-hidden" : "w-auto opacity-100"
       )}>
-          <Tabs value={currentTab} onValueChange={handleTabChange}>
-                <TabsList className="bg-neutral-900 border border-neutral-800">
+            <Tabs value={currentTab} onValueChange={handleTabChange}>
+                <TabsList className="grid w-full grid-cols-2 bg-secondary text-secondary-foreground">
                     <TabsTrigger value="year">Year</TabsTrigger>
                     <TabsTrigger value="month">Month</TabsTrigger>
                 </TabsList>
             </Tabs>
 
-            <div className="hidden text-sm text-neutral-400 xl:block">
+            <div className="hidden text-sm text-muted-foreground xl:block tabular-nums font-mono">
                 {formattedString}
             </div>
       </div>
 
-      <div className="flex items-center gap-2 pl-2 border-l border-neutral-800/50">
+      <div className={cn("flex items-center gap-2 pl-2 border-l border-border pointer-events-auto", focusMode && "border-transparent pl-0 absolute right-4 top-8")}>
           <Label htmlFor="focus-mode" className={cn(
-              "text-xs text-neutral-500 transition-opacity",
-              focusMode && "opacity-0 hidden sm:block sm:opacity-50"
+              "text-xs text-muted-foreground transition-opacity cursor-pointer",
+              focusMode && "opacity-50 hover:opacity-100"
           )}>Focus</Label>
           <Switch id="focus-mode" checked={focusMode} onCheckedChange={setFocusMode} />
       </div>
