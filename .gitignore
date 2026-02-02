@@ -48,3 +48,5 @@ yarn-error.log*
 /.next-build/
 /.next-dist/
 /generated/prisma
+
+bun.lock
