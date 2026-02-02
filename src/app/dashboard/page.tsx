@@ -10,6 +10,7 @@ import { useLayout } from "@/context/layout-context";
 import { YearGridSkeleton } from "@/components/skeletons/year-grid-skeleton";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
+import { Flame, Target } from "lucide-react";
 
 export default function DashboardPage() {
   const { now, loading } = useChronos();
@@ -35,6 +36,38 @@ export default function DashboardPage() {
       return map;
   }, [yearlyStats]);
 
+  // Aggregation for Summary Cards
+  const summary = useMemo(() => {
+    if (!yearlyStats) return { streak: 0, avg: "0.0" };
+
+    // Sort logic
+    const sorted = [...yearlyStats].sort((a, b) => a.date.getTime() - b.date.getTime());
+
+    // Streak
+    let currentStreak = 0;
+    let maxStreak = 0;
+    let prevDate: Date | null = null;
+
+    sorted.forEach(stat => {
+        if (!prevDate) {
+            currentStreak = 1;
+        } else {
+            const diff = (stat.date.getTime() - prevDate.getTime()) / (1000 * 60 * 60 * 24);
+            if (Math.abs(diff - 1) < 0.1) currentStreak++;
+            else currentStreak = 1;
+        }
+        if (currentStreak > maxStreak) maxStreak = currentStreak;
+        prevDate = stat.date;
+    });
+
+    // Avg
+    const total = yearlyStats.reduce((acc, cur) => acc + (cur.productivityScore || 0), 0);
+    const avg = yearlyStats.length > 0 ? (total / yearlyStats.length).toFixed(1) : "0.0";
+
+    return { streak: maxStreak, avg };
+  }, [yearlyStats]);
+
+
   const days = useMemo(() => {
     // Fallback to current date if loading
     const targetDate = now || new Date();
@@ -56,12 +89,19 @@ export default function DashboardPage() {
     <div className="flex flex-col gap-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div className="flex items-center justify-between">
           <h2 className="text-3xl font-bold tracking-tight text-foreground">Year Grid</h2>
-          <div className="text-sm text-muted-foreground font-mono bg-secondary/50 px-2 py-1 rounded">
-             {year}
+          <div className="flex items-center gap-4">
+              <div className="flex items-center gap-2 text-sm font-medium bg-card border border-border px-3 py-1 rounded-full shadow-sm">
+                  <Flame className="h-4 w-4 text-orange-500" />
+                  <span>{summary.streak} Day Streak</span>
+              </div>
+              <div className="flex items-center gap-2 text-sm font-medium bg-card border border-border px-3 py-1 rounded-full shadow-sm">
+                  <Target className="h-4 w-4 text-emerald-500" />
+                  <span>{summary.avg} Avg</span>
+              </div>
           </div>
       </div>
 
-      <Card className="border-border bg-card/50 backdrop-blur-sm shadow-sm">
+      <Card className="border-border bg-card/50 backdrop-blur-sm shadow-sm overflow-hidden">
         <CardContent className="p-6">
             <div className="flex flex-wrap gap-1.5 justify-start">
                 {days.map((day) => {

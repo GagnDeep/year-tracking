@@ -2,6 +2,7 @@ import "@/styles/globals.css";
 
 import { type Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { Toaster } from "@/components/ui/sonner";
 
 import { TRPCReactProvider } from "@/trpc/react";
 import { AuthProvider } from "@/components/providers/session-provider";
@@ -30,6 +31,7 @@ export default function RootLayout({
       <body className="bg-neutral-950 text-neutral-50 antialiased font-sans">
         <AuthProvider>
           <TRPCReactProvider>{children}</TRPCReactProvider>
+          <Toaster />
         </AuthProvider>
       </body>
     </html>
