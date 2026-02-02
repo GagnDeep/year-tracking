@@ -9,272 +9,33 @@
 
 ✓ Starting...
 ✓ Ready in 2.9s
- GET /login 200 in 4.0s (compile: 3.1s, render: 887ms)
- GET /api/auth/providers 200 in 2.4s (compile: 2.3s, render: 38ms)
- GET /api/auth/csrf 200 in 49ms (compile: 26ms, render: 24ms)
-prisma:query SELECT `main`.`User`.`id`, `main`.`User`.`name`, `main`.`User`.`email`, `main`.`User`.`emailVerified`, `main`.`User`.`image`, `main`.`User`.`password` FROM `main`.`User` WHERE (`main`.`User`.`email` = ? AND 1=1) LIMIT ? OFFSET ?
- POST /api/auth/callback/credentials 200 in 192ms (compile: 5ms, render: 187ms)
- GET /dashboard 200 in 356ms (compile: 307ms, render: 49ms)
- GET /api/trpc/journal.getYearlyStats?batch=1&input=%7B%220%22%3A%7B%22json%22%3A%7B%22year%22%3A2026%7D%7D%7D 200 in 3.5s (compile: 3.4s, render: 30ms)
- GET /dashboard/day/2024-01-01 200 in 3.5s (compile: 3.1s, render: 455ms)
+ GET /login 200 in 3.2s (compile: 2.4s, render: 799ms)
+ GET /api/auth/providers 200 in 1943ms (compile: 1884ms, render: 59ms)
+ GET /api/auth/csrf 200 in 56ms (compile: 34ms, render: 22ms)
+prisma:query SELECT `main`.`User`.`id`, `main`.`User`.`name`, `main`.`User`.`email`, `main`.`User`.`emailVerified`, `main`.`User`.`image`, `main`.`User`.`password`, `main`.`User`.`isPublic`, `main`.`User`.`username` FROM `main`.`User` WHERE (`main`.`User`.`email` = ? AND 1=1) LIMIT ? OFFSET ?
+ POST /api/auth/callback/credentials 200 in 239ms (compile: 7ms, render: 232ms)
+ GET /dashboard 200 in 1668ms (compile: 1600ms, render: 68ms)
 prisma:query SELECT `main`.`DayLog`.`id`, `main`.`DayLog`.`date`, `main`.`DayLog`.`productivityScore`, `main`.`DayLog`.`mood` FROM `main`.`DayLog` WHERE (`main`.`DayLog`.`userId` = ? AND `main`.`DayLog`.`date` >= ? AND `main`.`DayLog`.`date` <= ?) LIMIT ? OFFSET ?
-[TRPC] journal.getYearlyStats took 453ms to execute
-prisma:query SELECT `main`.`DayLog`.`id`, `main`.`DayLog`.`userId`, `main`.`DayLog`.`date`, `main`.`DayLog`.`productivityScore`, `main`.`DayLog`.`mood`, `main`.`DayLog`.`content`, `main`.`DayLog`.`isPublic` FROM `main`.`DayLog` WHERE ((`main`.`DayLog`.`userId` = ? AND `main`.`DayLog`.`date` = ?) AND 1=1) LIMIT ? OFFSET ?
-[TRPC] journal.getEntry took 254ms to execute
-prisma:query SELECT `main`.`DayLog`.`id`, `main`.`DayLog`.`userId`, `main`.`DayLog`.`date`, `main`.`DayLog`.`productivityScore`, `main`.`DayLog`.`mood`, `main`.`DayLog`.`content`, `main`.`DayLog`.`isPublic` FROM `main`.`DayLog` WHERE ((`main`.`DayLog`.`userId` = ? AND `main`.`DayLog`.`date` = ?) AND 1=1) LIMIT ? OFFSET ?
-prisma:query SELECT `main`.`TimeBlock`.`id`, `main`.`TimeBlock`.`dayLogId`, `main`.`TimeBlock`.`startTime`, `main`.`TimeBlock`.`endTime`, `main`.`TimeBlock`.`category`, `main`.`TimeBlock`.`title` FROM `main`.`TimeBlock` WHERE `main`.`TimeBlock`.`dayLogId` IN (?) LIMIT ? OFFSET ?
-[TRPC] timeline.getBlocks took 472ms to execute
- GET /api/trpc/journal.getEntry,timeline.getBlocks?batch=1&input=%7B%220%22%3A%7B%22json%22%3A%7B%22date%22%3A%222024-01-01%22%7D%7D%2C%221%22%3A%7B%22json%22%3A%7B%22date%22%3A%222024-01-01%22%7D%7D%7D 200 in 517ms (compile: 31ms, render: 486ms)
- GET /login 200 in 91ms (compile: 8ms, render: 82ms)
- GET /api/auth/providers 200 in 49ms (compile: 33ms, render: 17ms)
- GET /api/auth/csrf 200 in 13ms (compile: 3ms, render: 9ms)
+[TRPC] journal.getYearlyStats took 377ms to execute
+ GET /api/trpc/journal.getYearlyStats?batch=1&input=%7B%220%22%3A%7B%22json%22%3A%7B%22year%22%3A2026%7D%7D%7D 200 in 3.0s (compile: 2.6s, render: 466ms)
+ GET /login 200 in 218ms (compile: 14ms, render: 204ms)
+ GET /api/auth/providers 200 in 104ms (compile: 76ms, render: 28ms)
+ GET /api/auth/csrf 200 in 32ms (compile: 12ms, render: 20ms)
 prisma:query SELECT 1
-prisma:query SELECT `main`.`User`.`id`, `main`.`User`.`name`, `main`.`User`.`email`, `main`.`User`.`emailVerified`, `main`.`User`.`image`, `main`.`User`.`password` FROM `main`.`User` WHERE (`main`.`User`.`email` = ? AND 1=1) LIMIT ? OFFSET ?
- POST /api/auth/callback/credentials 200 in 164ms (compile: 3ms, render: 161ms)
- GET /dashboard 200 in 38ms (compile: 5ms, render: 33ms)
- GET /api/trpc/journal.getYearlyStats?batch=1&input=%7B%220%22%3A%7B%22json%22%3A%7B%22year%22%3A2026%7D%7D%7D 200 in 504ms (compile: 347ms, render: 157ms)
- GET /dashboard/day/2024-01-01 200 in 732ms (compile: 36ms, render: 695ms)
-prisma:query SELECT `main`.`DayLog`.`id`, `main`.`DayLog`.`date`, `main`.`DayLog`.`productivityScore`, `main`.`DayLog`.`mood` FROM `main`.`DayLog` WHERE (`main`.`DayLog`.`userId` = ? AND `main`.`DayLog`.`date` >= ? AND `main`.`DayLog`.`date` <= ?) LIMIT ? OFFSET ?
-[TRPC] journal.getYearlyStats took 339ms to execute
-prisma:query SELECT `main`.`DayLog`.`id`, `main`.`DayLog`.`userId`, `main`.`DayLog`.`date`, `main`.`DayLog`.`productivityScore`, `main`.`DayLog`.`mood`, `main`.`DayLog`.`content`, `main`.`DayLog`.`isPublic` FROM `main`.`DayLog` WHERE ((`main`.`DayLog`.`userId` = ? AND `main`.`DayLog`.`date` = ?) AND 1=1) LIMIT ? OFFSET ?
-prisma:query SELECT `main`.`TimeBlock`.`id`, `main`.`TimeBlock`.`dayLogId`, `main`.`TimeBlock`.`startTime`, `main`.`TimeBlock`.`endTime`, `main`.`TimeBlock`.`category`, `main`.`TimeBlock`.`title` FROM `main`.`TimeBlock` WHERE `main`.`TimeBlock`.`dayLogId` IN (?) LIMIT ? OFFSET ?
-[TRPC] timeline.getBlocks took 110ms to execute
-prisma:query SELECT `main`.`DayLog`.`id`, `main`.`DayLog`.`userId`, `main`.`DayLog`.`date`, `main`.`DayLog`.`productivityScore`, `main`.`DayLog`.`mood`, `main`.`DayLog`.`content`, `main`.`DayLog`.`isPublic` FROM `main`.`DayLog` WHERE ((`main`.`DayLog`.`userId` = ? AND `main`.`DayLog`.`date` = ?) AND 1=1) LIMIT ? OFFSET ?
-[TRPC] journal.getEntry took 182ms to execute
- GET /api/trpc/journal.getEntry,timeline.getBlocks?batch=1&input=%7B%220%22%3A%7B%22json%22%3A%7B%22date%22%3A%222024-01-01%22%7D%7D%2C%221%22%3A%7B%22json%22%3A%7B%22date%22%3A%222024-01-01%22%7D%7D%7D 200 in 199ms (compile: 3ms, render: 196ms)
- GET /login 200 in 70ms (compile: 4ms, render: 67ms)
- GET /api/auth/providers 200 in 46ms (compile: 35ms, render: 10ms)
- GET /api/auth/csrf 200 in 11ms (compile: 3ms, render: 8ms)
-prisma:query SELECT 1
-prisma:query SELECT `main`.`User`.`id`, `main`.`User`.`name`, `main`.`User`.`email`, `main`.`User`.`emailVerified`, `main`.`User`.`image`, `main`.`User`.`password` FROM `main`.`User` WHERE (`main`.`User`.`email` = ? AND 1=1) LIMIT ? OFFSET ?
- POST /api/auth/callback/credentials 200 in 154ms (compile: 3ms, render: 152ms)
- GET /dashboard 200 in 47ms (compile: 6ms, render: 41ms)
- GET /dashboard/day/2024-01-01 200 in 182ms (compile: 43ms, render: 139ms)
-prisma:query SELECT `main`.`DayLog`.`id`, `main`.`DayLog`.`userId`, `main`.`DayLog`.`date`, `main`.`DayLog`.`productivityScore`, `main`.`DayLog`.`mood`, `main`.`DayLog`.`content`, `main`.`DayLog`.`isPublic` FROM `main`.`DayLog` WHERE ((`main`.`DayLog`.`userId` = ? AND `main`.`DayLog`.`date` = ?) AND 1=1) LIMIT ? OFFSET ?
-[TRPC] journal.getEntry took 394ms to execute
-prisma:query SELECT `main`.`DayLog`.`id`, `main`.`DayLog`.`userId`, `main`.`DayLog`.`date`, `main`.`DayLog`.`productivityScore`, `main`.`DayLog`.`mood`, `main`.`DayLog`.`content`, `main`.`DayLog`.`isPublic` FROM `main`.`DayLog` WHERE ((`main`.`DayLog`.`userId` = ? AND `main`.`DayLog`.`date` = ?) AND 1=1) LIMIT ? OFFSET ?
-prisma:query SELECT `main`.`TimeBlock`.`id`, `main`.`TimeBlock`.`dayLogId`, `main`.`TimeBlock`.`startTime`, `main`.`TimeBlock`.`endTime`, `main`.`TimeBlock`.`category`, `main`.`TimeBlock`.`title` FROM `main`.`TimeBlock` WHERE `main`.`TimeBlock`.`dayLogId` IN (?) LIMIT ? OFFSET ?
-[TRPC] timeline.getBlocks took 465ms to execute
- GET /api/trpc/journal.getEntry,timeline.getBlocks?batch=1&input=%7B%220%22%3A%7B%22json%22%3A%7B%22date%22%3A%222024-01-01%22%7D%7D%2C%221%22%3A%7B%22json%22%3A%7B%22date%22%3A%222024-01-01%22%7D%7D%7D 200 in 509ms (compile: 30ms, render: 479ms)
- GET /login 200 in 71ms (compile: 8ms, render: 63ms)
- GET /api/auth/providers 200 in 38ms (compile: 30ms, render: 8ms)
- GET /api/auth/csrf 200 in 11ms (compile: 3ms, render: 9ms)
-prisma:query SELECT 1
-prisma:query SELECT `main`.`User`.`id`, `main`.`User`.`name`, `main`.`User`.`email`, `main`.`User`.`emailVerified`, `main`.`User`.`image`, `main`.`User`.`password` FROM `main`.`User` WHERE (`main`.`User`.`email` = ? AND 1=1) LIMIT ? OFFSET ?
- POST /api/auth/callback/credentials 200 in 156ms (compile: 3ms, render: 154ms)
- GET /dashboard 200 in 50ms (compile: 4ms, render: 46ms)
- GET /api/trpc/journal.getYearlyStats?batch=1&input=%7B%220%22%3A%7B%22json%22%3A%7B%22year%22%3A2026%7D%7D%7D 200 in 184ms (compile: 143ms, render: 41ms)
- GET /dashboard/day/2024-01-01 200 in 203ms (compile: 36ms, render: 166ms)
-prisma:query SELECT `main`.`DayLog`.`id`, `main`.`DayLog`.`date`, `main`.`DayLog`.`productivityScore`, `main`.`DayLog`.`mood` FROM `main`.`DayLog` WHERE (`main`.`DayLog`.`userId` = ? AND `main`.`DayLog`.`date` >= ? AND `main`.`DayLog`.`date` <= ?) LIMIT ? OFFSET ?
-[TRPC] journal.getYearlyStats took 276ms to execute
-prisma:query SELECT `main`.`DayLog`.`id`, `main`.`DayLog`.`userId`, `main`.`DayLog`.`date`, `main`.`DayLog`.`productivityScore`, `main`.`DayLog`.`mood`, `main`.`DayLog`.`content`, `main`.`DayLog`.`isPublic` FROM `main`.`DayLog` WHERE ((`main`.`DayLog`.`userId` = ? AND `main`.`DayLog`.`date` = ?) AND 1=1) LIMIT ? OFFSET ?
-prisma:query SELECT `main`.`TimeBlock`.`id`, `main`.`TimeBlock`.`dayLogId`, `main`.`TimeBlock`.`startTime`, `main`.`TimeBlock`.`endTime`, `main`.`TimeBlock`.`category`, `main`.`TimeBlock`.`title` FROM `main`.`TimeBlock` WHERE `main`.`TimeBlock`.`dayLogId` IN (?) LIMIT ? OFFSET ?
-[TRPC] timeline.getBlocks took 322ms to execute
-prisma:query SELECT `main`.`DayLog`.`id`, `main`.`DayLog`.`userId`, `main`.`DayLog`.`date`, `main`.`DayLog`.`productivityScore`, `main`.`DayLog`.`mood`, `main`.`DayLog`.`content`, `main`.`DayLog`.`isPublic` FROM `main`.`DayLog` WHERE ((`main`.`DayLog`.`userId` = ? AND `main`.`DayLog`.`date` = ?) AND 1=1) LIMIT ? OFFSET ?
-[TRPC] journal.getEntry took 393ms to execute
- GET /api/trpc/journal.getEntry,timeline.getBlocks?batch=1&input=%7B%220%22%3A%7B%22json%22%3A%7B%22date%22%3A%222024-01-01%22%7D%7D%2C%221%22%3A%7B%22json%22%3A%7B%22date%22%3A%222024-01-01%22%7D%7D%7D 200 in 407ms (compile: 3ms, render: 404ms)
- GET /login 200 in 60ms (compile: 3ms, render: 57ms)
- GET /api/auth/providers 200 in 40ms (compile: 30ms, render: 10ms)
- GET /api/auth/csrf 200 in 10ms (compile: 3ms, render: 7ms)
-prisma:query SELECT 1
-prisma:query SELECT `main`.`User`.`id`, `main`.`User`.`name`, `main`.`User`.`email`, `main`.`User`.`emailVerified`, `main`.`User`.`image`, `main`.`User`.`password` FROM `main`.`User` WHERE (`main`.`User`.`email` = ? AND 1=1) LIMIT ? OFFSET ?
- POST /api/auth/callback/credentials 200 in 149ms (compile: 3ms, render: 146ms)
- GET /dashboard 200 in 30ms (compile: 4ms, render: 26ms)
- GET /dashboard/day/2024-01-01 200 in 233ms (compile: 34ms, render: 199ms)
-prisma:query SELECT `main`.`DayLog`.`id`, `main`.`DayLog`.`userId`, `main`.`DayLog`.`date`, `main`.`DayLog`.`productivityScore`, `main`.`DayLog`.`mood`, `main`.`DayLog`.`content`, `main`.`DayLog`.`isPublic` FROM `main`.`DayLog` WHERE ((`main`.`DayLog`.`userId` = ? AND `main`.`DayLog`.`date` = ?) AND 1=1) LIMIT ? OFFSET ?
-prisma:query SELECT `main`.`TimeBlock`.`id`, `main`.`TimeBlock`.`dayLogId`, `main`.`TimeBlock`.`startTime`, `main`.`TimeBlock`.`endTime`, `main`.`TimeBlock`.`category`, `main`.`TimeBlock`.`title` FROM `main`.`TimeBlock` WHERE `main`.`TimeBlock`.`dayLogId` IN (?) LIMIT ? OFFSET ?
-[TRPC] timeline.getBlocks took 118ms to execute
-prisma:query SELECT `main`.`DayLog`.`id`, `main`.`DayLog`.`userId`, `main`.`DayLog`.`date`, `main`.`DayLog`.`productivityScore`, `main`.`DayLog`.`mood`, `main`.`DayLog`.`content`, `main`.`DayLog`.`isPublic` FROM `main`.`DayLog` WHERE ((`main`.`DayLog`.`userId` = ? AND `main`.`DayLog`.`date` = ?) AND 1=1) LIMIT ? OFFSET ?
-[TRPC] journal.getEntry took 373ms to execute
- GET /api/trpc/journal.getEntry,timeline.getBlocks?batch=1&input=%7B%220%22%3A%7B%22json%22%3A%7B%22date%22%3A%222024-01-01%22%7D%7D%2C%221%22%3A%7B%22json%22%3A%7B%22date%22%3A%222024-01-01%22%7D%7D%7D 200 in 417ms (compile: 31ms, render: 386ms)
- GET /login 200 in 101ms (compile: 5ms, render: 96ms)
- GET /api/auth/providers 200 in 51ms (compile: 38ms, render: 13ms)
- GET /api/auth/csrf 200 in 35ms (compile: 17ms, render: 18ms)
-prisma:query SELECT 1
-prisma:query SELECT `main`.`User`.`id`, `main`.`User`.`name`, `main`.`User`.`email`, `main`.`User`.`emailVerified`, `main`.`User`.`image`, `main`.`User`.`password` FROM `main`.`User` WHERE (`main`.`User`.`email` = ? AND 1=1) LIMIT ? OFFSET ?
- POST /api/auth/callback/credentials 200 in 175ms (compile: 4ms, render: 170ms)
- GET /dashboard 200 in 39ms (compile: 4ms, render: 35ms)
- GET /dashboard/day/2024-01-01 200 in 332ms (compile: 39ms, render: 293ms)
-prisma:query SELECT `main`.`DayLog`.`id`, `main`.`DayLog`.`userId`, `main`.`DayLog`.`date`, `main`.`DayLog`.`productivityScore`, `main`.`DayLog`.`mood`, `main`.`DayLog`.`content`, `main`.`DayLog`.`isPublic` FROM `main`.`DayLog` WHERE ((`main`.`DayLog`.`userId` = ? AND `main`.`DayLog`.`date` = ?) AND 1=1) LIMIT ? OFFSET ?
-prisma:query SELECT `main`.`TimeBlock`.`id`, `main`.`TimeBlock`.`dayLogId`, `main`.`TimeBlock`.`startTime`, `main`.`TimeBlock`.`endTime`, `main`.`TimeBlock`.`category`, `main`.`TimeBlock`.`title` FROM `main`.`TimeBlock` WHERE `main`.`TimeBlock`.`dayLogId` IN (?) LIMIT ? OFFSET ?
-[TRPC] timeline.getBlocks took 317ms to execute
-prisma:query SELECT `main`.`DayLog`.`id`, `main`.`DayLog`.`userId`, `main`.`DayLog`.`date`, `main`.`DayLog`.`productivityScore`, `main`.`DayLog`.`mood`, `main`.`DayLog`.`content`, `main`.`DayLog`.`isPublic` FROM `main`.`DayLog` WHERE ((`main`.`DayLog`.`userId` = ? AND `main`.`DayLog`.`date` = ?) AND 1=1) LIMIT ? OFFSET ?
-[TRPC] journal.getEntry took 462ms to execute
- GET /api/trpc/journal.getEntry,timeline.getBlocks?batch=1&input=%7B%220%22%3A%7B%22json%22%3A%7B%22date%22%3A%222024-01-01%22%7D%7D%2C%221%22%3A%7B%22json%22%3A%7B%22date%22%3A%222024-01-01%22%7D%7D%7D 200 in 516ms (compile: 36ms, render: 480ms)
- GET /login 200 in 75ms (compile: 6ms, render: 69ms)
- GET /api/auth/providers 200 in 41ms (compile: 33ms, render: 8ms)
- GET /api/auth/csrf 200 in 13ms (compile: 2ms, render: 10ms)
-prisma:query SELECT 1
-prisma:query SELECT `main`.`User`.`id`, `main`.`User`.`name`, `main`.`User`.`email`, `main`.`User`.`emailVerified`, `main`.`User`.`image`, `main`.`User`.`password` FROM `main`.`User` WHERE (`main`.`User`.`email` = ? AND 1=1) LIMIT ? OFFSET ?
- POST /api/auth/callback/credentials 200 in 157ms (compile: 2ms, render: 154ms)
- GET /dashboard 200 in 57ms (compile: 3ms, render: 54ms)
- GET /dashboard/day/2024-01-01 200 in 159ms (compile: 34ms, render: 125ms)
-prisma:query SELECT `main`.`DayLog`.`id`, `main`.`DayLog`.`userId`, `main`.`DayLog`.`date`, `main`.`DayLog`.`productivityScore`, `main`.`DayLog`.`mood`, `main`.`DayLog`.`content`, `main`.`DayLog`.`isPublic` FROM `main`.`DayLog` WHERE ((`main`.`DayLog`.`userId` = ? AND `main`.`DayLog`.`date` = ?) AND 1=1) LIMIT ? OFFSET ?
-prisma:query SELECT `main`.`TimeBlock`.`id`, `main`.`TimeBlock`.`dayLogId`, `main`.`TimeBlock`.`startTime`, `main`.`TimeBlock`.`endTime`, `main`.`TimeBlock`.`category`, `main`.`TimeBlock`.`title` FROM `main`.`TimeBlock` WHERE `main`.`TimeBlock`.`dayLogId` IN (?) LIMIT ? OFFSET ?
-[TRPC] timeline.getBlocks took 258ms to execute
-prisma:query SELECT `main`.`DayLog`.`id`, `main`.`DayLog`.`userId`, `main`.`DayLog`.`date`, `main`.`DayLog`.`productivityScore`, `main`.`DayLog`.`mood`, `main`.`DayLog`.`content`, `main`.`DayLog`.`isPublic` FROM `main`.`DayLog` WHERE ((`main`.`DayLog`.`userId` = ? AND `main`.`DayLog`.`date` = ?) AND 1=1) LIMIT ? OFFSET ?
-[TRPC] journal.getEntry took 403ms to execute
- GET /api/trpc/journal.getEntry,timeline.getBlocks?batch=1&input=%7B%220%22%3A%7B%22json%22%3A%7B%22date%22%3A%222024-01-01%22%7D%7D%2C%221%22%3A%7B%22json%22%3A%7B%22date%22%3A%222024-01-01%22%7D%7D%7D 200 in 455ms (compile: 33ms, render: 423ms)
- GET /login 200 in 68ms (compile: 3ms, render: 64ms)
- GET /api/auth/providers 200 in 42ms (compile: 30ms, render: 12ms)
- GET /api/auth/csrf 200 in 11ms (compile: 4ms, render: 8ms)
-prisma:query SELECT 1
-prisma:query SELECT `main`.`User`.`id`, `main`.`User`.`name`, `main`.`User`.`email`, `main`.`User`.`emailVerified`, `main`.`User`.`image`, `main`.`User`.`password` FROM `main`.`User` WHERE (`main`.`User`.`email` = ? AND 1=1) LIMIT ? OFFSET ?
- POST /api/auth/callback/credentials 200 in 147ms (compile: 2ms, render: 145ms)
- GET /dashboard 200 in 45ms (compile: 3ms, render: 42ms)
- GET /api/trpc/journal.getYearlyStats?batch=1&input=%7B%220%22%3A%7B%22json%22%3A%7B%22year%22%3A2026%7D%7D%7D 200 in 68ms (compile: 51ms, render: 17ms)
- GET /dashboard/day/2024-01-01 200 in 330ms (compile: 54ms, render: 276ms)
-prisma:query SELECT `main`.`DayLog`.`id`, `main`.`DayLog`.`date`, `main`.`DayLog`.`productivityScore`, `main`.`DayLog`.`mood` FROM `main`.`DayLog` WHERE (`main`.`DayLog`.`userId` = ? AND `main`.`DayLog`.`date` >= ? AND `main`.`DayLog`.`date` <= ?) LIMIT ? OFFSET ?
-[TRPC] journal.getYearlyStats took 455ms to execute
-prisma:query SELECT `main`.`DayLog`.`id`, `main`.`DayLog`.`userId`, `main`.`DayLog`.`date`, `main`.`DayLog`.`productivityScore`, `main`.`DayLog`.`mood`, `main`.`DayLog`.`content`, `main`.`DayLog`.`isPublic` FROM `main`.`DayLog` WHERE ((`main`.`DayLog`.`userId` = ? AND `main`.`DayLog`.`date` = ?) AND 1=1) LIMIT ? OFFSET ?
-prisma:query SELECT `main`.`TimeBlock`.`id`, `main`.`TimeBlock`.`dayLogId`, `main`.`TimeBlock`.`startTime`, `main`.`TimeBlock`.`endTime`, `main`.`TimeBlock`.`category`, `main`.`TimeBlock`.`title` FROM `main`.`TimeBlock` WHERE `main`.`TimeBlock`.`dayLogId` IN (?) LIMIT ? OFFSET ?
-[TRPC] timeline.getBlocks took 226ms to execute
-prisma:query SELECT `main`.`DayLog`.`id`, `main`.`DayLog`.`userId`, `main`.`DayLog`.`date`, `main`.`DayLog`.`productivityScore`, `main`.`DayLog`.`mood`, `main`.`DayLog`.`content`, `main`.`DayLog`.`isPublic` FROM `main`.`DayLog` WHERE ((`main`.`DayLog`.`userId` = ? AND `main`.`DayLog`.`date` = ?) AND 1=1) LIMIT ? OFFSET ?
-[TRPC] journal.getEntry took 441ms to execute
- GET /api/trpc/journal.getEntry,timeline.getBlocks?batch=1&input=%7B%220%22%3A%7B%22json%22%3A%7B%22date%22%3A%222024-01-01%22%7D%7D%2C%221%22%3A%7B%22json%22%3A%7B%22date%22%3A%222024-01-01%22%7D%7D%7D 200 in 459ms (compile: 7ms, render: 452ms)
- GET /login 200 in 68ms (compile: 4ms, render: 64ms)
- GET /api/auth/providers 200 in 129ms (compile: 100ms, render: 28ms)
- GET /api/auth/csrf 200 in 17ms (compile: 4ms, render: 13ms)
-prisma:query SELECT 1
-prisma:query SELECT `main`.`User`.`id`, `main`.`User`.`name`, `main`.`User`.`email`, `main`.`User`.`emailVerified`, `main`.`User`.`image`, `main`.`User`.`password` FROM `main`.`User` WHERE (`main`.`User`.`email` = ? AND 1=1) LIMIT ? OFFSET ?
- POST /api/auth/callback/credentials 200 in 162ms (compile: 3ms, render: 159ms)
- GET /dashboard 200 in 45ms (compile: 4ms, render: 41ms)
- GET /api/trpc/journal.getYearlyStats?batch=1&input=%7B%220%22%3A%7B%22json%22%3A%7B%22year%22%3A2026%7D%7D%7D 200 in 48ms (compile: 33ms, render: 16ms)
- GET /dashboard/day/2024-01-01 200 in 293ms (compile: 32ms, render: 261ms)
-prisma:query SELECT `main`.`DayLog`.`id`, `main`.`DayLog`.`date`, `main`.`DayLog`.`productivityScore`, `main`.`DayLog`.`mood` FROM `main`.`DayLog` WHERE (`main`.`DayLog`.`userId` = ? AND `main`.`DayLog`.`date` >= ? AND `main`.`DayLog`.`date` <= ?) LIMIT ? OFFSET ?
-[TRPC] journal.getYearlyStats took 250ms to execute
-prisma:query SELECT `main`.`DayLog`.`id`, `main`.`DayLog`.`userId`, `main`.`DayLog`.`date`, `main`.`DayLog`.`productivityScore`, `main`.`DayLog`.`mood`, `main`.`DayLog`.`content`, `main`.`DayLog`.`isPublic` FROM `main`.`DayLog` WHERE ((`main`.`DayLog`.`userId` = ? AND `main`.`DayLog`.`date` = ?) AND 1=1) LIMIT ? OFFSET ?
-[TRPC] journal.getEntry took 246ms to execute
-prisma:query SELECT `main`.`DayLog`.`id`, `main`.`DayLog`.`userId`, `main`.`DayLog`.`date`, `main`.`DayLog`.`productivityScore`, `main`.`DayLog`.`mood`, `main`.`DayLog`.`content`, `main`.`DayLog`.`isPublic` FROM `main`.`DayLog` WHERE ((`main`.`DayLog`.`userId` = ? AND `main`.`DayLog`.`date` = ?) AND 1=1) LIMIT ? OFFSET ?
-prisma:query SELECT `main`.`TimeBlock`.`id`, `main`.`TimeBlock`.`dayLogId`, `main`.`TimeBlock`.`startTime`, `main`.`TimeBlock`.`endTime`, `main`.`TimeBlock`.`category`, `main`.`TimeBlock`.`title` FROM `main`.`TimeBlock` WHERE `main`.`TimeBlock`.`dayLogId` IN (?) LIMIT ? OFFSET ?
-[TRPC] timeline.getBlocks took 366ms to execute
- GET /api/trpc/journal.getEntry,timeline.getBlocks?batch=1&input=%7B%220%22%3A%7B%22json%22%3A%7B%22date%22%3A%222024-01-01%22%7D%7D%2C%221%22%3A%7B%22json%22%3A%7B%22date%22%3A%222024-01-01%22%7D%7D%7D 200 in 380ms (compile: 3ms, render: 378ms)
- GET /login 200 in 149ms (compile: 8ms, render: 141ms)
- GET /api/auth/providers 200 in 45ms (compile: 35ms, render: 10ms)
- GET /api/auth/csrf 200 in 11ms (compile: 3ms, render: 9ms)
-prisma:query SELECT 1
-prisma:query SELECT `main`.`User`.`id`, `main`.`User`.`name`, `main`.`User`.`email`, `main`.`User`.`emailVerified`, `main`.`User`.`image`, `main`.`User`.`password` FROM `main`.`User` WHERE (`main`.`User`.`email` = ? AND 1=1) LIMIT ? OFFSET ?
- POST /api/auth/callback/credentials 200 in 150ms (compile: 3ms, render: 148ms)
- GET /dashboard 200 in 59ms (compile: 4ms, render: 55ms)
- GET /dashboard/day/2024-01-01 200 in 386ms (compile: 43ms, render: 344ms)
-prisma:query SELECT `main`.`DayLog`.`id`, `main`.`DayLog`.`date`, `main`.`DayLog`.`productivityScore`, `main`.`DayLog`.`mood` FROM `main`.`DayLog` WHERE (`main`.`DayLog`.`userId` = ? AND `main`.`DayLog`.`date` >= ? AND `main`.`DayLog`.`date` <= ?) LIMIT ? OFFSET ?
-[TRPC] journal.getYearlyStats took 366ms to execute
-prisma:query SELECT `main`.`DayLog`.`id`, `main`.`DayLog`.`userId`, `main`.`DayLog`.`date`, `main`.`DayLog`.`productivityScore`, `main`.`DayLog`.`mood`, `main`.`DayLog`.`content`, `main`.`DayLog`.`isPublic` FROM `main`.`DayLog` WHERE ((`main`.`DayLog`.`userId` = ? AND `main`.`DayLog`.`date` = ?) AND 1=1) LIMIT ? OFFSET ?
-[TRPC] journal.getEntry took 125ms to execute
-prisma:query SELECT `main`.`DayLog`.`id`, `main`.`DayLog`.`userId`, `main`.`DayLog`.`date`, `main`.`DayLog`.`productivityScore`, `main`.`DayLog`.`mood`, `main`.`DayLog`.`content`, `main`.`DayLog`.`isPublic` FROM `main`.`DayLog` WHERE ((`main`.`DayLog`.`userId` = ? AND `main`.`DayLog`.`date` = ?) AND 1=1) LIMIT ? OFFSET ?
-prisma:query SELECT `main`.`TimeBlock`.`id`, `main`.`TimeBlock`.`dayLogId`, `main`.`TimeBlock`.`startTime`, `main`.`TimeBlock`.`endTime`, `main`.`TimeBlock`.`category`, `main`.`TimeBlock`.`title` FROM `main`.`TimeBlock` WHERE `main`.`TimeBlock`.`dayLogId` IN (?) LIMIT ? OFFSET ?
-[TRPC] timeline.getBlocks took 377ms to execute
- GET /api/trpc/journal.getEntry,timeline.getBlocks?batch=1&input=%7B%220%22%3A%7B%22json%22%3A%7B%22date%22%3A%222024-01-01%22%7D%7D%2C%221%22%3A%7B%22json%22%3A%7B%22date%22%3A%222024-01-01%22%7D%7D%7D 200 in 394ms (compile: 5ms, render: 389ms)
- GET /login 200 in 74ms (compile: 3ms, render: 71ms)
- GET /api/auth/providers 200 in 44ms (compile: 33ms, render: 11ms)
- GET /api/auth/csrf 200 in 12ms (compile: 3ms, render: 10ms)
-prisma:query SELECT 1
-prisma:query SELECT `main`.`User`.`id`, `main`.`User`.`name`, `main`.`User`.`email`, `main`.`User`.`emailVerified`, `main`.`User`.`image`, `main`.`User`.`password` FROM `main`.`User` WHERE (`main`.`User`.`email` = ? AND 1=1) LIMIT ? OFFSET ?
- POST /api/auth/callback/credentials 200 in 153ms (compile: 3ms, render: 150ms)
- GET /dashboard 200 in 46ms (compile: 4ms, render: 42ms)
- GET /dashboard/day/2024-01-01 200 in 192ms (compile: 41ms, render: 151ms)
-prisma:query SELECT `main`.`DayLog`.`id`, `main`.`DayLog`.`userId`, `main`.`DayLog`.`date`, `main`.`DayLog`.`productivityScore`, `main`.`DayLog`.`mood`, `main`.`DayLog`.`content`, `main`.`DayLog`.`isPublic` FROM `main`.`DayLog` WHERE ((`main`.`DayLog`.`userId` = ? AND `main`.`DayLog`.`date` = ?) AND 1=1) LIMIT ? OFFSET ?
-[TRPC] journal.getEntry took 124ms to execute
-prisma:query SELECT `main`.`DayLog`.`id`, `main`.`DayLog`.`userId`, `main`.`DayLog`.`date`, `main`.`DayLog`.`productivityScore`, `main`.`DayLog`.`mood`, `main`.`DayLog`.`content`, `main`.`DayLog`.`isPublic` FROM `main`.`DayLog` WHERE ((`main`.`DayLog`.`userId` = ? AND `main`.`DayLog`.`date` = ?) AND 1=1) LIMIT ? OFFSET ?
-prisma:query SELECT `main`.`TimeBlock`.`id`, `main`.`TimeBlock`.`dayLogId`, `main`.`TimeBlock`.`startTime`, `main`.`TimeBlock`.`endTime`, `main`.`TimeBlock`.`category`, `main`.`TimeBlock`.`title` FROM `main`.`TimeBlock` WHERE `main`.`TimeBlock`.`dayLogId` IN (?) LIMIT ? OFFSET ?
-[TRPC] timeline.getBlocks took 413ms to execute
- GET /api/trpc/journal.getEntry,timeline.getBlocks?batch=1&input=%7B%220%22%3A%7B%22json%22%3A%7B%22date%22%3A%222024-01-01%22%7D%7D%2C%221%22%3A%7B%22json%22%3A%7B%22date%22%3A%222024-01-01%22%7D%7D%7D 200 in 457ms (compile: 31ms, render: 426ms)
- GET /login 200 in 80ms (compile: 3ms, render: 77ms)
- GET /api/auth/providers 200 in 41ms (compile: 34ms, render: 7ms)
- GET /api/auth/csrf 200 in 10ms (compile: 3ms, render: 8ms)
-prisma:query SELECT 1
-prisma:query SELECT `main`.`User`.`id`, `main`.`User`.`name`, `main`.`User`.`email`, `main`.`User`.`emailVerified`, `main`.`User`.`image`, `main`.`User`.`password` FROM `main`.`User` WHERE (`main`.`User`.`email` = ? AND 1=1) LIMIT ? OFFSET ?
- POST /api/auth/callback/credentials 200 in 153ms (compile: 2ms, render: 151ms)
- GET /dashboard 200 in 28ms (compile: 3ms, render: 25ms)
- GET /api/trpc/journal.getYearlyStats?batch=1&input=%7B%220%22%3A%7B%22json%22%3A%7B%22year%22%3A2026%7D%7D%7D 200 in 179ms (compile: 151ms, render: 28ms)
- GET /dashboard/day/2024-01-01 200 in 201ms (compile: 48ms, render: 153ms)
-prisma:query SELECT `main`.`DayLog`.`id`, `main`.`DayLog`.`date`, `main`.`DayLog`.`productivityScore`, `main`.`DayLog`.`mood` FROM `main`.`DayLog` WHERE (`main`.`DayLog`.`userId` = ? AND `main`.`DayLog`.`date` >= ? AND `main`.`DayLog`.`date` <= ?) LIMIT ? OFFSET ?
-[TRPC] journal.getYearlyStats took 174ms to execute
-prisma:query SELECT `main`.`DayLog`.`id`, `main`.`DayLog`.`userId`, `main`.`DayLog`.`date`, `main`.`DayLog`.`productivityScore`, `main`.`DayLog`.`mood`, `main`.`DayLog`.`content`, `main`.`DayLog`.`isPublic` FROM `main`.`DayLog` WHERE ((`main`.`DayLog`.`userId` = ? AND `main`.`DayLog`.`date` = ?) AND 1=1) LIMIT ? OFFSET ?
-prisma:query SELECT `main`.`TimeBlock`.`id`, `main`.`TimeBlock`.`dayLogId`, `main`.`TimeBlock`.`startTime`, `main`.`TimeBlock`.`endTime`, `main`.`TimeBlock`.`category`, `main`.`TimeBlock`.`title` FROM `main`.`TimeBlock` WHERE `main`.`TimeBlock`.`dayLogId` IN (?) LIMIT ? OFFSET ?
-[TRPC] timeline.getBlocks took 133ms to execute
-prisma:query SELECT `main`.`DayLog`.`id`, `main`.`DayLog`.`userId`, `main`.`DayLog`.`date`, `main`.`DayLog`.`productivityScore`, `main`.`DayLog`.`mood`, `main`.`DayLog`.`content`, `main`.`DayLog`.`isPublic` FROM `main`.`DayLog` WHERE ((`main`.`DayLog`.`userId` = ? AND `main`.`DayLog`.`date` = ?) AND 1=1) LIMIT ? OFFSET ?
-[TRPC] journal.getEntry took 321ms to execute
- GET /api/trpc/journal.getEntry,timeline.getBlocks?batch=1&input=%7B%220%22%3A%7B%22json%22%3A%7B%22date%22%3A%222024-01-01%22%7D%7D%2C%221%22%3A%7B%22json%22%3A%7B%22date%22%3A%222024-01-01%22%7D%7D%7D 200 in 339ms (compile: 3ms, render: 336ms)
- GET /login 200 in 68ms (compile: 4ms, render: 64ms)
- GET /api/auth/providers 200 in 44ms (compile: 35ms, render: 9ms)
- GET /api/auth/csrf 200 in 10ms (compile: 3ms, render: 8ms)
-prisma:query SELECT 1
-prisma:query SELECT `main`.`User`.`id`, `main`.`User`.`name`, `main`.`User`.`email`, `main`.`User`.`emailVerified`, `main`.`User`.`image`, `main`.`User`.`password` FROM `main`.`User` WHERE (`main`.`User`.`email` = ? AND 1=1) LIMIT ? OFFSET ?
- POST /api/auth/callback/credentials 200 in 152ms (compile: 3ms, render: 149ms)
- GET /dashboard 200 in 47ms (compile: 4ms, render: 43ms)
- GET /api/trpc/journal.getYearlyStats?batch=1&input=%7B%220%22%3A%7B%22json%22%3A%7B%22year%22%3A2026%7D%7D%7D 200 in 47ms (compile: 36ms, render: 11ms)
- GET /dashboard/day/2024-01-01 200 in 378ms (compile: 35ms, render: 343ms)
-prisma:query SELECT `main`.`DayLog`.`id`, `main`.`DayLog`.`date`, `main`.`DayLog`.`productivityScore`, `main`.`DayLog`.`mood` FROM `main`.`DayLog` WHERE (`main`.`DayLog`.`userId` = ? AND `main`.`DayLog`.`date` >= ? AND `main`.`DayLog`.`date` <= ?) LIMIT ? OFFSET ?
-[TRPC] journal.getYearlyStats took 293ms to execute
-prisma:query SELECT `main`.`DayLog`.`id`, `main`.`DayLog`.`userId`, `main`.`DayLog`.`date`, `main`.`DayLog`.`productivityScore`, `main`.`DayLog`.`mood`, `main`.`DayLog`.`content`, `main`.`DayLog`.`isPublic` FROM `main`.`DayLog` WHERE ((`main`.`DayLog`.`userId` = ? AND `main`.`DayLog`.`date` = ?) AND 1=1) LIMIT ? OFFSET ?
-prisma:query SELECT `main`.`TimeBlock`.`id`, `main`.`TimeBlock`.`dayLogId`, `main`.`TimeBlock`.`startTime`, `main`.`TimeBlock`.`endTime`, `main`.`TimeBlock`.`category`, `main`.`TimeBlock`.`title` FROM `main`.`TimeBlock` WHERE `main`.`TimeBlock`.`dayLogId` IN (?) LIMIT ? OFFSET ?
-[TRPC] timeline.getBlocks took 120ms to execute
-prisma:query SELECT `main`.`DayLog`.`id`, `main`.`DayLog`.`userId`, `main`.`DayLog`.`date`, `main`.`DayLog`.`productivityScore`, `main`.`DayLog`.`mood`, `main`.`DayLog`.`content`, `main`.`DayLog`.`isPublic` FROM `main`.`DayLog` WHERE ((`main`.`DayLog`.`userId` = ? AND `main`.`DayLog`.`date` = ?) AND 1=1) LIMIT ? OFFSET ?
-[TRPC] journal.getEntry took 207ms to execute
- GET /api/trpc/journal.getEntry,timeline.getBlocks?batch=1&input=%7B%220%22%3A%7B%22json%22%3A%7B%22date%22%3A%222024-01-01%22%7D%7D%2C%221%22%3A%7B%22json%22%3A%7B%22date%22%3A%222024-01-01%22%7D%7D%7D 200 in 223ms (compile: 3ms, render: 220ms)
- GET /login 200 in 72ms (compile: 3ms, render: 68ms)
- GET /api/auth/providers 200 in 41ms (compile: 33ms, render: 9ms)
- GET /api/auth/csrf 200 in 11ms (compile: 3ms, render: 8ms)
-prisma:query SELECT 1
-prisma:query SELECT `main`.`User`.`id`, `main`.`User`.`name`, `main`.`User`.`email`, `main`.`User`.`emailVerified`, `main`.`User`.`image`, `main`.`User`.`password` FROM `main`.`User` WHERE (`main`.`User`.`email` = ? AND 1=1) LIMIT ? OFFSET ?
- POST /api/auth/callback/credentials 200 in 148ms (compile: 3ms, render: 146ms)
- GET /dashboard 200 in 29ms (compile: 3ms, render: 26ms)
- GET /api/trpc/journal.getYearlyStats?batch=1&input=%7B%220%22%3A%7B%22json%22%3A%7B%22year%22%3A2026%7D%7D%7D 200 in 194ms (compile: 118ms, render: 76ms)
- GET /dashboard/day/2024-01-01 200 in 213ms (compile: 39ms, render: 174ms)
-prisma:query SELECT `main`.`DayLog`.`id`, `main`.`DayLog`.`date`, `main`.`DayLog`.`productivityScore`, `main`.`DayLog`.`mood` FROM `main`.`DayLog` WHERE (`main`.`DayLog`.`userId` = ? AND `main`.`DayLog`.`date` >= ? AND `main`.`DayLog`.`date` <= ?) LIMIT ? OFFSET ?
-[TRPC] journal.getYearlyStats took 376ms to execute
-prisma:query SELECT `main`.`DayLog`.`id`, `main`.`DayLog`.`userId`, `main`.`DayLog`.`date`, `main`.`DayLog`.`productivityScore`, `main`.`DayLog`.`mood`, `main`.`DayLog`.`content`, `main`.`DayLog`.`isPublic` FROM `main`.`DayLog` WHERE ((`main`.`DayLog`.`userId` = ? AND `main`.`DayLog`.`date` = ?) AND 1=1) LIMIT ? OFFSET ?
-prisma:query SELECT `main`.`TimeBlock`.`id`, `main`.`TimeBlock`.`dayLogId`, `main`.`TimeBlock`.`startTime`, `main`.`TimeBlock`.`endTime`, `main`.`TimeBlock`.`category`, `main`.`TimeBlock`.`title` FROM `main`.`TimeBlock` WHERE `main`.`TimeBlock`.`dayLogId` IN (?) LIMIT ? OFFSET ?
-[TRPC] timeline.getBlocks took 277ms to execute
-prisma:query SELECT `main`.`DayLog`.`id`, `main`.`DayLog`.`userId`, `main`.`DayLog`.`date`, `main`.`DayLog`.`productivityScore`, `main`.`DayLog`.`mood`, `main`.`DayLog`.`content`, `main`.`DayLog`.`isPublic` FROM `main`.`DayLog` WHERE ((`main`.`DayLog`.`userId` = ? AND `main`.`DayLog`.`date` = ?) AND 1=1) LIMIT ? OFFSET ?
-[TRPC] journal.getEntry took 339ms to execute
- GET /api/trpc/journal.getEntry,timeline.getBlocks?batch=1&input=%7B%220%22%3A%7B%22json%22%3A%7B%22date%22%3A%222024-01-01%22%7D%7D%2C%221%22%3A%7B%22json%22%3A%7B%22date%22%3A%222024-01-01%22%7D%7D%7D 200 in 356ms (compile: 3ms, render: 353ms)
- GET /login 200 in 61ms (compile: 3ms, render: 58ms)
- GET /api/auth/providers 200 in 39ms (compile: 32ms, render: 7ms)
- GET /api/auth/csrf 200 in 11ms (compile: 2ms, render: 8ms)
-prisma:query SELECT 1
-prisma:query SELECT `main`.`User`.`id`, `main`.`User`.`name`, `main`.`User`.`email`, `main`.`User`.`emailVerified`, `main`.`User`.`image`, `main`.`User`.`password` FROM `main`.`User` WHERE (`main`.`User`.`email` = ? AND 1=1) LIMIT ? OFFSET ?
- POST /api/auth/callback/credentials 200 in 148ms (compile: 2ms, render: 145ms)
- GET /dashboard 200 in 47ms (compile: 3ms, render: 44ms)
- GET /api/trpc/journal.getYearlyStats?batch=1&input=%7B%220%22%3A%7B%22json%22%3A%7B%22year%22%3A2026%7D%7D%7D 200 in 57ms (compile: 41ms, render: 15ms)
- GET /dashboard/day/2024-01-01 200 in 274ms (compile: 37ms, render: 237ms)
-prisma:query SELECT `main`.`DayLog`.`id`, `main`.`DayLog`.`date`, `main`.`DayLog`.`productivityScore`, `main`.`DayLog`.`mood` FROM `main`.`DayLog` WHERE (`main`.`DayLog`.`userId` = ? AND `main`.`DayLog`.`date` >= ? AND `main`.`DayLog`.`date` <= ?) LIMIT ? OFFSET ?
-[TRPC] journal.getYearlyStats took 490ms to execute
-prisma:query SELECT `main`.`DayLog`.`id`, `main`.`DayLog`.`userId`, `main`.`DayLog`.`date`, `main`.`DayLog`.`productivityScore`, `main`.`DayLog`.`mood`, `main`.`DayLog`.`content`, `main`.`DayLog`.`isPublic` FROM `main`.`DayLog` WHERE ((`main`.`DayLog`.`userId` = ? AND `main`.`DayLog`.`date` = ?) AND 1=1) LIMIT ? OFFSET ?
-[TRPC] journal.getEntry took 209ms to execute
-prisma:query SELECT `main`.`DayLog`.`id`, `main`.`DayLog`.`userId`, `main`.`DayLog`.`date`, `main`.`DayLog`.`productivityScore`, `main`.`DayLog`.`mood`, `main`.`DayLog`.`content`, `main`.`DayLog`.`isPublic` FROM `main`.`DayLog` WHERE ((`main`.`DayLog`.`userId` = ? AND `main`.`DayLog`.`date` = ?) AND 1=1) LIMIT ? OFFSET ?
-prisma:query SELECT `main`.`TimeBlock`.`id`, `main`.`TimeBlock`.`dayLogId`, `main`.`TimeBlock`.`startTime`, `main`.`TimeBlock`.`endTime`, `main`.`TimeBlock`.`category`, `main`.`TimeBlock`.`title` FROM `main`.`TimeBlock` WHERE `main`.`TimeBlock`.`dayLogId` IN (?) LIMIT ? OFFSET ?
-[TRPC] timeline.getBlocks took 439ms to execute
- GET /api/trpc/journal.getEntry,timeline.getBlocks?batch=1&input=%7B%220%22%3A%7B%22json%22%3A%7B%22date%22%3A%222024-01-01%22%7D%7D%2C%221%22%3A%7B%22json%22%3A%7B%22date%22%3A%222024-01-01%22%7D%7D%7D 200 in 456ms (compile: 4ms, render: 452ms)
- GET /login 200 in 64ms (compile: 4ms, render: 60ms)
- GET /api/auth/providers 200 in 40ms (compile: 32ms, render: 8ms)
- GET /api/auth/csrf 200 in 10ms (compile: 3ms, render: 8ms)
-prisma:query SELECT 1
-prisma:query SELECT `main`.`User`.`id`, `main`.`User`.`name`, `main`.`User`.`email`, `main`.`User`.`emailVerified`, `main`.`User`.`image`, `main`.`User`.`password` FROM `main`.`User` WHERE (`main`.`User`.`email` = ? AND 1=1) LIMIT ? OFFSET ?
- POST /api/auth/callback/credentials 200 in 153ms (compile: 3ms, render: 150ms)
- GET /dashboard 200 in 56ms (compile: 5ms, render: 51ms)
- GET /api/trpc/journal.getYearlyStats?batch=1&input=%7B%220%22%3A%7B%22json%22%3A%7B%22year%22%3A2026%7D%7D%7D 200 in 230ms (compile: 41ms, render: 188ms)
- GET /dashboard/day/2024-01-01 200 in 289ms (compile: 97ms, render: 192ms)
-prisma:query SELECT `main`.`DayLog`.`id`, `main`.`DayLog`.`date`, `main`.`DayLog`.`productivityScore`, `main`.`DayLog`.`mood` FROM `main`.`DayLog` WHERE (`main`.`DayLog`.`userId` = ? AND `main`.`DayLog`.`date` >= ? AND `main`.`DayLog`.`date` <= ?) LIMIT ? OFFSET ?
-[TRPC] journal.getYearlyStats took 400ms to execute
-prisma:query SELECT `main`.`DayLog`.`id`, `main`.`DayLog`.`userId`, `main`.`DayLog`.`date`, `main`.`DayLog`.`productivityScore`, `main`.`DayLog`.`mood`, `main`.`DayLog`.`content`, `main`.`DayLog`.`isPublic` FROM `main`.`DayLog` WHERE ((`main`.`DayLog`.`userId` = ? AND `main`.`DayLog`.`date` = ?) AND 1=1) LIMIT ? OFFSET ?
-prisma:query SELECT `main`.`TimeBlock`.`id`, `main`.`TimeBlock`.`dayLogId`, `main`.`TimeBlock`.`startTime`, `main`.`TimeBlock`.`endTime`, `main`.`TimeBlock`.`category`, `main`.`TimeBlock`.`title` FROM `main`.`TimeBlock` WHERE `main`.`TimeBlock`.`dayLogId` IN (?) LIMIT ? OFFSET ?
-[TRPC] timeline.getBlocks took 249ms to execute
-prisma:query SELECT `main`.`DayLog`.`id`, `main`.`DayLog`.`userId`, `main`.`DayLog`.`date`, `main`.`DayLog`.`productivityScore`, `main`.`DayLog`.`mood`, `main`.`DayLog`.`content`, `main`.`DayLog`.`isPublic` FROM `main`.`DayLog` WHERE ((`main`.`DayLog`.`userId` = ? AND `main`.`DayLog`.`date` = ?) AND 1=1) LIMIT ? OFFSET ?
-[TRPC] journal.getEntry took 360ms to execute
- GET /api/trpc/journal.getEntry,timeline.getBlocks?batch=1&input=%7B%220%22%3A%7B%22json%22%3A%7B%22date%22%3A%222024-01-01%22%7D%7D%2C%221%22%3A%7B%22json%22%3A%7B%22date%22%3A%222024-01-01%22%7D%7D%7D 200 in 381ms (compile: 3ms, render: 378ms)
- GET /login 200 in 71ms (compile: 4ms, render: 67ms)
- GET /api/auth/providers 200 in 41ms (compile: 31ms, render: 10ms)
- GET /api/auth/csrf 200 in 10ms (compile: 2ms, render: 8ms)
-prisma:query SELECT 1
-prisma:query SELECT `main`.`User`.`id`, `main`.`User`.`name`, `main`.`User`.`email`, `main`.`User`.`emailVerified`, `main`.`User`.`image`, `main`.`User`.`password` FROM `main`.`User` WHERE (`main`.`User`.`email` = ? AND 1=1) LIMIT ? OFFSET ?
- POST /api/auth/callback/credentials 200 in 152ms (compile: 4ms, render: 148ms)
- GET /dashboard 200 in 38ms (compile: 3ms, render: 35ms)
- GET /dashboard/day/2024-01-01 200 in 192ms (compile: 35ms, render: 157ms)
-prisma:query SELECT `main`.`DayLog`.`id`, `main`.`DayLog`.`userId`, `main`.`DayLog`.`date`, `main`.`DayLog`.`productivityScore`, `main`.`DayLog`.`mood`, `main`.`DayLog`.`content`, `main`.`DayLog`.`isPublic` FROM `main`.`DayLog` WHERE ((`main`.`DayLog`.`userId` = ? AND `main`.`DayLog`.`date` = ?) AND 1=1) LIMIT ? OFFSET ?
-[TRPC] journal.getEntry took 108ms to execute
-prisma:query SELECT `main`.`DayLog`.`id`, `main`.`DayLog`.`userId`, `main`.`DayLog`.`date`, `main`.`DayLog`.`productivityScore`, `main`.`DayLog`.`mood`, `main`.`DayLog`.`content`, `main`.`DayLog`.`isPublic` FROM `main`.`DayLog` WHERE ((`main`.`DayLog`.`userId` = ? AND `main`.`DayLog`.`date` = ?) AND 1=1) LIMIT ? OFFSET ?
-prisma:query SELECT `main`.`TimeBlock`.`id`, `main`.`TimeBlock`.`dayLogId`, `main`.`TimeBlock`.`startTime`, `main`.`TimeBlock`.`endTime`, `main`.`TimeBlock`.`category`, `main`.`TimeBlock`.`title` FROM `main`.`TimeBlock` WHERE `main`.`TimeBlock`.`dayLogId` IN (?) LIMIT ? OFFSET ?
-[TRPC] timeline.getBlocks took 354ms to execute
- GET /api/trpc/journal.getEntry,timeline.getBlocks?batch=1&input=%7B%220%22%3A%7B%22json%22%3A%7B%22date%22%3A%222024-01-01%22%7D%7D%2C%221%22%3A%7B%22json%22%3A%7B%22date%22%3A%222024-01-01%22%7D%7D%7D 200 in 398ms (compile: 30ms, render: 368ms)
+prisma:query SELECT `main`.`User`.`id`, `main`.`User`.`name`, `main`.`User`.`email`, `main`.`User`.`emailVerified`, `main`.`User`.`image`, `main`.`User`.`password`, `main`.`User`.`isPublic`, `main`.`User`.`username` FROM `main`.`User` WHERE (`main`.`User`.`email` = ? AND 1=1) LIMIT ? OFFSET ?
+ POST /api/auth/callback/credentials 401 in 43ms (compile: 12ms, render: 32ms)
+ GET /dashboard 200 in 550ms (compile: 93ms, render: 457ms)
+[TRPC] journal.getYearlyStats took 410ms to execute
+❌ tRPC failed on journal.getYearlyStats: UNAUTHORIZED
+ GET /api/trpc/journal.getYearlyStats?batch=1&input=%7B%220%22%3A%7B%22json%22%3A%7B%22year%22%3A2026%7D%7D%7D 200 in 605ms (compile: 82ms, render: 523ms)
+[TRPC] journal.getYearlyStats took 219ms to execute
+❌ tRPC failed on journal.getYearlyStats: UNAUTHORIZED
+ GET /api/trpc/journal.getYearlyStats?batch=1&input=%7B%220%22%3A%7B%22json%22%3A%7B%22year%22%3A2026%7D%7D%7D 200 in 249ms (compile: 5ms, render: 244ms)
+ GET /dashboard/day/2026-02-02 200 in 2.5s (compile: 2.4s, render: 74ms)
+ GET /api/trpc/journal.getEntry,timeline.getBlocks?batch=1&input=%7B%220%22%3A%7B%22json%22%3A%7B%22date%22%3A%222026-02-02%22%7D%7D%2C%221%22%3A%7B%22json%22%3A%7B%22date%22%3A%222026-02-02%22%7D%7D%7D 200 in 75ms (compile: 51ms, render: 24ms)
+[TRPC] journal.getEntry took 222ms to execute
+❌ tRPC failed on journal.getEntry: UNAUTHORIZED
+[TRPC] timeline.getBlocks took 292ms to execute
+❌ tRPC failed on timeline.getBlocks: UNAUTHORIZED
+ ELIFECYCLE  Command failed.
+[?25h

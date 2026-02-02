@@ -5,6 +5,7 @@ import { AppSidebar } from "./_components/app-sidebar";
 import { Header } from "./_components/header";
 import { useLayout } from "@/context/layout-context";
 import { Screensaver } from "@/components/layout/screensaver";
+import { CommandMenu } from "@/components/layout/command-menu";
 import { cn } from "@/lib/utils";
 
 export function DashboardShell({ children }: { children: React.ReactNode }) {
@@ -13,6 +14,7 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
   return (
     <SidebarProvider defaultOpen={!focusMode}>
        <Screensaver />
+       <CommandMenu />
        <div className="flex min-h-screen w-full bg-neutral-950 text-white relative">
          <div className={cn(
             "transition-all duration-300 ease-in-out overflow-hidden",

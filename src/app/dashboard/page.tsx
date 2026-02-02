@@ -7,6 +7,7 @@ import { eachDayOfInterval, startOfYear, endOfYear, isSameDay, isBefore, format 
 import { useChronos } from "@/hooks/use-chronos";
 import { api } from "@/trpc/react";
 import { useLayout } from "@/context/layout-context";
+import { YearGridSkeleton } from "@/components/skeletons/year-grid-skeleton";
 
 export default function DashboardPage() {
   const { now, loading } = useChronos();
@@ -47,7 +48,7 @@ export default function DashboardPage() {
     router.push(`/dashboard/day/${dateStr}`);
   };
 
-  if (loading) return <div className="p-4">Loading grid...</div>;
+  if (loading) return <YearGridSkeleton />;
 
   return (
     <div className="flex flex-col gap-4">

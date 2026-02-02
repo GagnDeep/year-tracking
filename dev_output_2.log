@@ -1,0 +1,118 @@
+
+> landing-page-template@0.1.0 dev /app
+> next dev --turbo
+
+▲ Next.js 16.1.3 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://192.168.0.2:3000
+- Environments: .env
+
+✓ Starting...
+✓ Ready in 1956ms
+ GET /login 200 in 1650ms (compile: 755ms, render: 895ms)
+ GET /api/auth/providers 200 in 1508ms (compile: 1454ms, render: 55ms)
+ GET /api/auth/csrf 200 in 67ms (compile: 50ms, render: 17ms)
+prisma:query SELECT `main`.`User`.`id`, `main`.`User`.`name`, `main`.`User`.`email`, `main`.`User`.`emailVerified`, `main`.`User`.`image`, `main`.`User`.`password`, `main`.`User`.`isPublic`, `main`.`User`.`username` FROM `main`.`User` WHERE (`main`.`User`.`email` = ? AND 1=1) LIMIT ? OFFSET ?
+ POST /api/auth/callback/credentials 401 in 45ms (compile: 8ms, render: 37ms)
+ GET /dashboard 200 in 565ms (compile: 143ms, render: 422ms)
+ GET /dashboard/day/2026-02-02 200 in 1392ms (compile: 1185ms, render: 206ms)
+[TRPC] journal.getYearlyStats took 145ms to execute
+❌ tRPC failed on journal.getYearlyStats: UNAUTHORIZED
+ GET /api/trpc/journal.getYearlyStats?batch=1&input=%7B%220%22%3A%7B%22json%22%3A%7B%22year%22%3A2026%7D%7D%7D 200 in 1667ms (compile: 1454ms, render: 213ms)
+ GET /api/trpc/journal.getEntry,timeline.getBlocks?batch=1&input=%7B%220%22%3A%7B%22json%22%3A%7B%22date%22%3A%222026-02-02%22%7D%7D%2C%221%22%3A%7B%22json%22%3A%7B%22date%22%3A%222026-02-02%22%7D%7D%7D 200 in 122ms (compile: 49ms, render: 73ms)
+[TRPC] timeline.getBlocks took 206ms to execute
+❌ tRPC failed on timeline.getBlocks: UNAUTHORIZED
+[TRPC] journal.getEntry took 432ms to execute
+❌ tRPC failed on journal.getEntry: UNAUTHORIZED
+ GET /login 200 in 148ms (compile: 12ms, render: 136ms)
+ GET /api/auth/providers 200 in 54ms (compile: 38ms, render: 17ms)
+ GET /api/auth/csrf 200 in 24ms (compile: 6ms, render: 19ms)
+prisma:query SELECT 1
+prisma:query SELECT `main`.`User`.`id`, `main`.`User`.`name`, `main`.`User`.`email`, `main`.`User`.`emailVerified`, `main`.`User`.`image`, `main`.`User`.`password`, `main`.`User`.`isPublic`, `main`.`User`.`username` FROM `main`.`User` WHERE (`main`.`User`.`email` = ? AND 1=1) LIMIT ? OFFSET ?
+ POST /api/auth/callback/credentials 401 in 29ms (compile: 6ms, render: 23ms)
+ GET /dashboard 200 in 293ms (compile: 8ms, render: 285ms)
+[TRPC] journal.getYearlyStats took 159ms to execute
+❌ tRPC failed on journal.getYearlyStats: UNAUTHORIZED
+ GET /api/trpc/journal.getYearlyStats?batch=1&input=%7B%220%22%3A%7B%22json%22%3A%7B%22year%22%3A2026%7D%7D%7D 200 in 261ms (compile: 66ms, render: 196ms)
+ GET /dashboard/day/2026-02-02 200 in 203ms (compile: 53ms, render: 150ms)
+[TRPC] journal.getYearlyStats took 152ms to execute
+❌ tRPC failed on journal.getYearlyStats: UNAUTHORIZED
+ GET /api/trpc/journal.getYearlyStats?batch=1&input=%7B%220%22%3A%7B%22json%22%3A%7B%22year%22%3A2026%7D%7D%7D 200 in 193ms (compile: 13ms, render: 180ms)
+ GET /api/trpc/journal.getEntry,timeline.getBlocks?batch=1&input=%7B%220%22%3A%7B%22json%22%3A%7B%22date%22%3A%222026-02-02%22%7D%7D%2C%221%22%3A%7B%22json%22%3A%7B%22date%22%3A%222026-02-02%22%7D%7D%7D 200 in 236ms (compile: 12ms, render: 224ms)
+[TRPC] journal.getEntry took 274ms to execute
+❌ tRPC failed on journal.getEntry: UNAUTHORIZED
+[TRPC] timeline.getBlocks took 317ms to execute
+❌ tRPC failed on timeline.getBlocks: UNAUTHORIZED
+ GET /login 200 in 136ms (compile: 8ms, render: 129ms)
+ GET /register 200 in 102ms (compile: 43ms, render: 59ms)
+ GET /login 200 in 119ms (compile: 5ms, render: 114ms)
+ GET /register 200 in 47ms (compile: 7ms, render: 40ms)
+[TRPC] auth.register took 200ms to execute
+❌ tRPC failed on auth.register: [
+  {
+    "code": "too_small",
+    "minimum": 1,
+    "type": "string",
+    "inclusive": true,
+    "exact": false,
+    "message": "String must contain at least 1 character(s)",
+    "path": [
+      "name"
+    ]
+  }
+]
+ POST /api/trpc/auth.register?batch=1 200 in 268ms (compile: 53ms, render: 215ms)
+ GET /login 200 in 102ms (compile: 7ms, render: 95ms)
+ GET /register 200 in 41ms (compile: 4ms, render: 37ms)
+prisma:query SELECT 1
+prisma:query SELECT `main`.`User`.`id`, `main`.`User`.`name`, `main`.`User`.`email`, `main`.`User`.`emailVerified`, `main`.`User`.`image`, `main`.`User`.`password`, `main`.`User`.`isPublic`, `main`.`User`.`username` FROM `main`.`User` WHERE (`main`.`User`.`email` = ? AND 1=1) LIMIT ? OFFSET ?
+prisma:query BEGIN IMMEDIATE
+prisma:query INSERT INTO `main`.`User` (`id`, `name`, `email`, `password`, `isPublic`) VALUES (?,?,?,?,?) RETURNING `id` AS `id`
+prisma:query INSERT INTO `main`.`YearConfig` (`id`, `userId`, `startOfWeek`, `theme`) VALUES (?,?,?,?) RETURNING `id` AS `id`
+prisma:query SELECT `main`.`User`.`id`, `main`.`User`.`name`, `main`.`User`.`email`, `main`.`User`.`emailVerified`, `main`.`User`.`image`, `main`.`User`.`password`, `main`.`User`.`isPublic`, `main`.`User`.`username` FROM `main`.`User` WHERE `main`.`User`.`id` = ? LIMIT ? OFFSET ?
+prisma:query COMMIT
+[TRPC] auth.register took 396ms to execute
+ POST /api/trpc/auth.register?batch=1 200 in 451ms (compile: 38ms, render: 413ms)
+ GET /login 200 in 35ms (compile: 6ms, render: 29ms)
+ GET /login 200 in 117ms (compile: 5ms, render: 112ms)
+ GET /register 200 in 46ms (compile: 5ms, render: 41ms)
+prisma:query SELECT 1
+prisma:query SELECT `main`.`User`.`id`, `main`.`User`.`name`, `main`.`User`.`email`, `main`.`User`.`emailVerified`, `main`.`User`.`image`, `main`.`User`.`password`, `main`.`User`.`isPublic`, `main`.`User`.`username` FROM `main`.`User` WHERE (`main`.`User`.`email` = ? AND 1=1) LIMIT ? OFFSET ?
+prisma:query BEGIN IMMEDIATE
+prisma:query INSERT INTO `main`.`User` (`id`, `name`, `email`, `password`, `isPublic`) VALUES (?,?,?,?,?) RETURNING `id` AS `id`
+prisma:query INSERT INTO `main`.`YearConfig` (`id`, `userId`, `startOfWeek`, `theme`) VALUES (?,?,?,?) RETURNING `id` AS `id`
+prisma:query SELECT `main`.`User`.`id`, `main`.`User`.`name`, `main`.`User`.`email`, `main`.`User`.`emailVerified`, `main`.`User`.`image`, `main`.`User`.`password`, `main`.`User`.`isPublic`, `main`.`User`.`username` FROM `main`.`User` WHERE `main`.`User`.`id` = ? LIMIT ? OFFSET ?
+prisma:query COMMIT
+[TRPC] auth.register took 291ms to execute
+ POST /api/trpc/auth.register?batch=1 200 in 351ms (compile: 40ms, render: 311ms)
+ GET /login 200 in 51ms (compile: 4ms, render: 47ms)
+ GET /login 200 in 744ms (compile: 104ms, render: 640ms)
+ GET /register 200 in 56ms (compile: 12ms, render: 44ms)
+prisma:query SELECT 1
+prisma:query SELECT `main`.`User`.`id`, `main`.`User`.`name`, `main`.`User`.`email`, `main`.`User`.`emailVerified`, `main`.`User`.`image`, `main`.`User`.`password`, `main`.`User`.`isPublic`, `main`.`User`.`username` FROM `main`.`User` WHERE (`main`.`User`.`email` = ? AND 1=1) LIMIT ? OFFSET ?
+prisma:query BEGIN IMMEDIATE
+prisma:query INSERT INTO `main`.`User` (`id`, `name`, `email`, `password`, `isPublic`) VALUES (?,?,?,?,?) RETURNING `id` AS `id`
+prisma:query INSERT INTO `main`.`YearConfig` (`id`, `userId`, `startOfWeek`, `theme`) VALUES (?,?,?,?) RETURNING `id` AS `id`
+prisma:query SELECT `main`.`User`.`id`, `main`.`User`.`name`, `main`.`User`.`email`, `main`.`User`.`emailVerified`, `main`.`User`.`image`, `main`.`User`.`password`, `main`.`User`.`isPublic`, `main`.`User`.`username` FROM `main`.`User` WHERE `main`.`User`.`id` = ? LIMIT ? OFFSET ?
+prisma:query COMMIT
+[TRPC] auth.register took 611ms to execute
+ POST /api/trpc/auth.register?batch=1 200 in 738ms (compile: 93ms, render: 645ms)
+ GET /login 200 in 75ms (compile: 13ms, render: 62ms)
+ GET /api/auth/providers 200 in 80ms (compile: 56ms, render: 23ms)
+ GET /api/auth/csrf 200 in 21ms (compile: 6ms, render: 14ms)
+prisma:query SELECT `main`.`User`.`id`, `main`.`User`.`name`, `main`.`User`.`email`, `main`.`User`.`emailVerified`, `main`.`User`.`image`, `main`.`User`.`password`, `main`.`User`.`isPublic`, `main`.`User`.`username` FROM `main`.`User` WHERE (`main`.`User`.`email` = ? AND 1=1) LIMIT ? OFFSET ?
+ POST /api/auth/callback/credentials 200 in 453ms (compile: 24ms, render: 429ms)
+ GET /dashboard 200 in 147ms (compile: 14ms, render: 133ms)
+prisma:query SELECT `main`.`DayLog`.`id`, `main`.`DayLog`.`date`, `main`.`DayLog`.`productivityScore`, `main`.`DayLog`.`mood` FROM `main`.`DayLog` WHERE (`main`.`DayLog`.`userId` = ? AND `main`.`DayLog`.`date` >= ? AND `main`.`DayLog`.`date` <= ?) LIMIT ? OFFSET ?
+[TRPC] journal.getYearlyStats took 374ms to execute
+ GET /api/trpc/journal.getYearlyStats?batch=1&input=%7B%220%22%3A%7B%22json%22%3A%7B%22year%22%3A2026%7D%7D%7D 200 in 481ms (compile: 55ms, render: 427ms)
+ GET /dashboard 200 in 197ms (compile: 6ms, render: 191ms)
+prisma:query SELECT `main`.`DayLog`.`id`, `main`.`DayLog`.`date`, `main`.`DayLog`.`productivityScore`, `main`.`DayLog`.`mood` FROM `main`.`DayLog` WHERE (`main`.`DayLog`.`userId` = ? AND `main`.`DayLog`.`date` >= ? AND `main`.`DayLog`.`date` <= ?) LIMIT ? OFFSET ?
+[TRPC] journal.getYearlyStats took 413ms to execute
+ GET /api/trpc/journal.getYearlyStats?batch=1&input=%7B%220%22%3A%7B%22json%22%3A%7B%22year%22%3A2026%7D%7D%7D 200 in 487ms (compile: 43ms, render: 445ms)
+ GET /dashboard/day/2026-02-02 200 in 319ms (compile: 82ms, render: 238ms)
+ GET /api/trpc/journal.getEntry,timeline.getBlocks?batch=1&input=%7B%220%22%3A%7B%22json%22%3A%7B%22date%22%3A%222026-02-02%22%7D%7D%2C%221%22%3A%7B%22json%22%3A%7B%22date%22%3A%222026-02-02%22%7D%7D%7D 200 in 258ms (compile: 59ms, render: 199ms)
+prisma:query SELECT `main`.`DayLog`.`id`, `main`.`DayLog`.`userId`, `main`.`DayLog`.`date`, `main`.`DayLog`.`productivityScore`, `main`.`DayLog`.`mood`, `main`.`DayLog`.`content`, `main`.`DayLog`.`isPublic` FROM `main`.`DayLog` WHERE ((`main`.`DayLog`.`userId` = ? AND `main`.`DayLog`.`date` = ?) AND 1=1) LIMIT ? OFFSET ?
+[TRPC] timeline.getBlocks took 363ms to execute
+prisma:query SELECT `main`.`DayLog`.`id`, `main`.`DayLog`.`userId`, `main`.`DayLog`.`date`, `main`.`DayLog`.`productivityScore`, `main`.`DayLog`.`mood`, `main`.`DayLog`.`content`, `main`.`DayLog`.`isPublic` FROM `main`.`DayLog` WHERE ((`main`.`DayLog`.`userId` = ? AND `main`.`DayLog`.`date` = ?) AND 1=1) LIMIT ? OFFSET ?
+[TRPC] journal.getEntry took 446ms to execute
