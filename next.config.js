@@ -7,9 +7,6 @@ import "./src/env.js";
 /** @type {import("next").NextConfig} */
 const config = {
 	distDir: process.env.NODE_ENV === "production" ? ".next-dist" : ".next-dev",
-	eslint: {
-		ignoreDuringBuilds: true,
-	},
 	typescript: {
 		ignoreBuildErrors: true,
 	},
