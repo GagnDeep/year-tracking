@@ -37,9 +37,6 @@ export function DailyJournal({ content, onChange, isSaving }: DailyJournalProps)
   // Sync content if it changes externally (e.g. initial load)
   useEffect(() => {
     if (editor && content && editor.getHTML() !== content) {
-        // Avoid cursor jump if focused?
-        // Only set if editor is empty or drastically different?
-        // For simple sync:
         if (Math.abs(editor.getText().length - content.length) > 5) {
              editor.commands.setContent(content);
         }
@@ -50,9 +47,12 @@ export function DailyJournal({ content, onChange, isSaving }: DailyJournalProps)
     return null;
   }
 
+  const wordCount = editor.storage.characterCount?.words() ?? 0;
+  const characterCount = editor.getText().length;
+
   return (
     <div className="flex flex-col border border-border rounded-lg bg-card overflow-hidden focus-within:ring-2 focus-within:ring-ring/20 transition-all shadow-sm">
-      <div className="flex items-center gap-1 p-2 border-b border-border bg-muted/30">
+      <div className="flex items-center gap-1 p-2 border-b border-border bg-muted/30 flex-wrap">
         <Toggle
           size="sm"
           pressed={editor.isActive("bold")}
@@ -107,8 +107,11 @@ export function DailyJournal({ content, onChange, isSaving }: DailyJournalProps)
           <Quote className="h-4 w-4" />
         </Toggle>
 
-        <div className="ml-auto text-xs text-muted-foreground px-2">
-            {isSaving ? "Saving..." : "Saved"}
+        <div className="ml-auto text-xs text-muted-foreground px-2 flex items-center gap-3">
+             <span className="tabular-nums">{characterCount} chars</span>
+             <span className={cn(isSaving ? "text-primary animate-pulse" : "text-muted-foreground")}>
+                {isSaving ? "Saving..." : "Saved"}
+             </span>
         </div>
       </div>
       <EditorContent editor={editor} className="min-h-[300px]" />
