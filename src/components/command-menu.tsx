@@ -56,6 +56,21 @@ export function CommandMenu() {
         <CommandInput placeholder="Type a command or search..." />
         <CommandList>
           <CommandEmpty>No results found.</CommandEmpty>
+          <CommandGroup heading="Actions">
+             <CommandItem
+              onSelect={() => runCommand(() => router.push("/dashboard/goals"))} // Ideally open dialog
+            >
+              <Target className="mr-2 h-4 w-4" />
+              <span>Create Goal</span>
+            </CommandItem>
+             <CommandItem
+              onSelect={() => runCommand(() => router.push("/dashboard"))} // Focus journal
+            >
+              <CalendarIcon className="mr-2 h-4 w-4" />
+              <span>Journal Today</span>
+            </CommandItem>
+          </CommandGroup>
+          <CommandSeparator />
           <CommandGroup heading="Navigation">
             <CommandItem
               onSelect={() => runCommand(() => router.push("/dashboard"))}

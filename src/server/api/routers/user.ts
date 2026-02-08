@@ -45,6 +45,7 @@ export const userRouter = createTRPCRouter({
       const user = await ctx.db.user.findUnique({
         where: { username: input.username },
         select: {
+          id: true,
           name: true,
           image: true,
           username: true,
@@ -56,6 +57,18 @@ export const userRouter = createTRPCRouter({
         throw new Error("User not found or profile is private");
       }
 
-      return user;
+      const goals = await ctx.db.goal.findMany({
+        where: {
+            userId: user.id,
+            isPublic: true
+        },
+        select: {
+            title: true,
+            description: true,
+            completed: true
+        }
+      });
+
+      return { ...user, goals };
     }),
 });

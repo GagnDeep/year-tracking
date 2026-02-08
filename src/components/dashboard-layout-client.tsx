@@ -37,9 +37,9 @@ import {
 import { CommandMenu } from "@/components/command-menu";
 import { useGlobalShortcuts } from "@/hooks/use-global-shortcuts";
 import { Eye, EyeOff } from "lucide-react";
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { useLocalStorage } from "usehooks-ts";
 
 interface DashboardLayoutClientProps {
   children: React.ReactNode;
@@ -79,7 +79,7 @@ export function DashboardLayoutClient({
   user,
 }: DashboardLayoutClientProps) {
   const pathname = usePathname();
-  const [focusMode, setFocusMode] = useState(false);
+  const [focusMode, setFocusMode] = useLocalStorage("chronos-focus-mode", false);
   useGlobalShortcuts();
 
   return (
@@ -150,6 +150,7 @@ export function DashboardLayoutClient({
                     <LogOut className="mr-2 h-4 w-4" />
                     Log out
                   </DropdownMenuItem>
+                  {/* Theme Toggle - usually in command menu but adding here for visibility */}
                 </DropdownMenuContent>
               </DropdownMenu>
             </SidebarMenuItem>

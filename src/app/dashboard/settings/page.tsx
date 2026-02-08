@@ -45,6 +45,12 @@ export default function SettingsPage() {
     mode: "onChange",
   });
 
+  const generateAvatar = () => {
+    const seed = Math.random().toString(36).substring(7);
+    const url = `https://api.dicebear.com/7.x/avataaars/svg?seed=${seed}`;
+    form.setValue("image", url, { shouldDirty: true });
+  };
+
   useEffect(() => {
     if (user) {
       form.reset({
@@ -132,9 +138,14 @@ export default function SettingsPage() {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Avatar URL</FormLabel>
-                <FormControl>
-                  <Input placeholder="https://..." {...field} />
-                </FormControl>
+                <div className="flex gap-2">
+                  <FormControl>
+                    <Input placeholder="https://..." {...field} />
+                  </FormControl>
+                  <Button type="button" variant="outline" onClick={generateAvatar}>
+                    Randomize
+                  </Button>
+                </div>
                 <FormDescription>
                   Link to your profile picture.
                 </FormDescription>

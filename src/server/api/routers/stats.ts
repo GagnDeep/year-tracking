@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { startOfWeek, endOfWeek, eachDayOfInterval, format, subDays } from "date-fns";
+import { startOfWeek, endOfWeek, eachDayOfInterval, format, subDays, differenceInDays } from "date-fns";
 
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 
@@ -55,6 +55,83 @@ export const statsRouter = createTRPCRouter({
       };
     });
 
-    return data;
+    // Calculate Streak
+    // Fetch all completed tasks ordered by completedAt desc
+    // We fetch a larger range to calculate streak properly, simpler than full history
+    const allCompletedTasks = await ctx.db.task.findMany({
+      where: {
+        userId: ctx.session.user.id,
+        completed: true,
+        completedAt: { not: null },
+      },
+      orderBy: { completedAt: "desc" },
+      select: { completedAt: true },
+      take: 100 // Optimization: just check last 100 tasks, if streak > 100 days, good enough or fetch more
+    });
+
+    let currentStreak = 0;
+
+    // Simplistic streak logic
+    const uniqueDays = new Set<string>();
+    allCompletedTasks.forEach(t => {
+        if (t.completedAt) {
+            uniqueDays.add(format(t.completedAt, 'yyyy-MM-dd'));
+        }
+    });
+
+    const todayStr = format(new Date(), 'yyyy-MM-dd');
+    const yesterdayStr = format(subDays(new Date(), 1), 'yyyy-MM-dd');
+
+    // Check if streak is alive (completed today or yesterday)
+    if (uniqueDays.has(todayStr) || uniqueDays.has(yesterdayStr)) {
+        let dateIter = new Date();
+        // If not today, start from yesterday
+        if (!uniqueDays.has(todayStr)) {
+            dateIter = subDays(new Date(), 1);
+        }
+
+        while (true) {
+            const dateStr = format(dateIter, 'yyyy-MM-dd');
+            if (uniqueDays.has(dateStr)) {
+                currentStreak++;
+                dateIter = subDays(dateIter, 1);
+            } else {
+                break;
+            }
+        }
+    }
+
+    return {
+        weeklyData: data,
+        currentStreak
+    };
+  }),
+
+  getCalendarDays: protectedProcedure.query(async ({ ctx }) => {
+    // Return all dates that have activity (journal or blocks)
+    // For optimization, maybe last 365 days?
+    // Let's just get distinct dates from Journal and Blocks
+
+    // Prisma distinct on dates is tricky with DateTime because of time.
+    // Ideally we store date as string or separate column.
+    // For now, we fetch partial data.
+
+    const journalEntries = await ctx.db.journalEntry.findMany({
+        where: { userId: ctx.session.user.id },
+        select: { date: true }
+    });
+
+    const blocks = await ctx.db.block.findMany({
+        where: { userId: ctx.session.user.id },
+        select: { date: true }
+    });
+
+    // Combine and dedupe
+    const dates = new Set<string>();
+
+    journalEntries.forEach(e => dates.add(format(e.date, "yyyy-MM-dd")));
+    blocks.forEach(b => dates.add(format(b.date, "yyyy-MM-dd")));
+
+    return Array.from(dates);
   }),
 });

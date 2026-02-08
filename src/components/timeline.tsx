@@ -119,9 +119,7 @@ export function Timeline({ date }: { date: Date }) {
 
   const upsertBlock = api.block.upsertBlock.useMutation({
     onSuccess: () => {
-      toast.success("Block saved");
-      setIsDialogOpen(false);
-      setEditingBlock(null);
+      // Don't invalidate immediately on swap to avoid jumpiness, but here it's fine
       void utils.block.getBlocks.invalidate();
     },
   });
@@ -141,11 +139,40 @@ export function Timeline({ date }: { date: Date }) {
     })
   );
 
-  const handleDragEnd = (event: DragEndEvent) => {
+  const handleDragEnd = async (event: DragEndEvent) => {
     const { active, over } = event;
 
-    if (over && active.id !== over.id) {
-        toast.info("Reordering not persisted yet (Time-based sort active)");
+    if (over && active.id !== over.id && blocks) {
+      const activeBlock = blocks.find((b) => b.id === active.id);
+      const overBlock = blocks.find((b) => b.id === over.id);
+
+      if (activeBlock && overBlock) {
+         // Swap times
+         const activeStart = activeBlock.startTime;
+         const activeEnd = activeBlock.endTime;
+         const overStart = overBlock.startTime;
+         const overEnd = overBlock.endTime;
+
+         toast.promise(
+            Promise.all([
+                upsertBlock.mutateAsync({
+                    ...activeBlock,
+                    startTime: overStart,
+                    endTime: overEnd,
+                }),
+                upsertBlock.mutateAsync({
+                    ...overBlock,
+                    startTime: activeStart,
+                    endTime: activeEnd,
+                })
+            ]),
+            {
+                loading: 'Reordering...',
+                success: 'Schedule updated',
+                error: 'Failed to reorder'
+            }
+         );
+      }
     }
   };
 
@@ -166,6 +193,12 @@ export function Timeline({ date }: { date: Date }) {
       date,
       category,
       type,
+    }, {
+        onSuccess: () => {
+             toast.success("Block saved");
+             setIsDialogOpen(false);
+             setEditingBlock(null);
+        }
     });
   };
 

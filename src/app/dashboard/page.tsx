@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { format } from "date-fns";
+import { format, addDays, subDays } from "date-fns";
 import { api } from "@/trpc/react";
 import { JournalEditor } from "@/components/journal-editor";
 import { Timeline } from "@/components/timeline";
@@ -11,7 +11,7 @@ import {
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
 import { Button } from "@/components/ui/button";
-import { CalendarIcon } from "lucide-react";
+import { CalendarIcon, ChevronLeft, ChevronRight } from "lucide-react";
 import {
   Popover,
   PopoverContent,
@@ -30,6 +30,9 @@ export default function DashboardPage() {
           Welcome back, {user?.name?.split(" ")[0] || "User"}
         </h1>
         <div className="flex items-center gap-2">
+          <Button variant="outline" size="icon" onClick={() => setDate(subDays(date, 1))}>
+            <ChevronLeft className="h-4 w-4" />
+          </Button>
           <Popover>
             <PopoverTrigger asChild>
               <Button
@@ -49,6 +52,9 @@ export default function DashboardPage() {
               />
             </PopoverContent>
           </Popover>
+          <Button variant="outline" size="icon" onClick={() => setDate(addDays(date, 1))}>
+            <ChevronRight className="h-4 w-4" />
+          </Button>
           <Button variant="outline" onClick={() => setDate(new Date())}>
              Today
           </Button>

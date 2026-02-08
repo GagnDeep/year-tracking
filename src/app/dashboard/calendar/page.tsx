@@ -13,8 +13,25 @@ import {
 import { JournalEditor } from "@/components/journal-editor";
 import { Timeline } from "@/components/timeline";
 
+import { api } from "@/trpc/react";
+
 export default function CalendarPage() {
   const [date, setDate] = useState<Date | undefined>(new Date());
+  const { data: activeDays } = api.stats.getCalendarDays.useQuery();
+
+  const modifiers = {
+    hasData: (date: Date) => {
+        return activeDays?.includes(format(date, "yyyy-MM-dd")) ?? false;
+    }
+  };
+
+  const modifiersStyles = {
+    hasData: {
+        fontWeight: 'bold',
+        textDecoration: 'underline',
+        color: 'var(--primary)'
+    }
+  };
 
   return (
     <div className="flex h-[calc(100vh-6rem)] flex-col gap-4 md:flex-row">
@@ -31,6 +48,8 @@ export default function CalendarPage() {
             selected={date}
             onSelect={setDate}
             className="rounded-md border"
+            modifiers={modifiers}
+            modifiersStyles={modifiersStyles}
           />
         </CardContent>
       </Card>

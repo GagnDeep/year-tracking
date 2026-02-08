@@ -35,6 +35,7 @@ export const goalRouter = createTRPCRouter({
         title: z.string().optional(),
         description: z.string().optional(),
         completed: z.boolean().optional(),
+        isPublic: z.boolean().optional(),
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -44,6 +45,7 @@ export const goalRouter = createTRPCRouter({
           title: input.title,
           description: input.description,
           completed: input.completed,
+          isPublic: input.isPublic,
         },
       });
     }),

@@ -44,7 +44,7 @@ export default function StatsPage() {
           </CardHeader>
           <CardContent className="pl-2">
             <ResponsiveContainer width="100%" height={350}>
-              <BarChart data={data}>
+              <BarChart data={data?.weeklyData}>
                 <XAxis
                   dataKey="name"
                   stroke="#888888"
@@ -91,11 +91,20 @@ export default function StatsPage() {
                     Total Tasks Completed This Week
                   </p>
                   <p className="text-2xl font-bold">
-                    {data?.reduce((acc, curr) => acc + curr.tasks, 0) || 0}
+                    {data?.weeklyData?.reduce((acc, curr) => acc + curr.tasks, 0) || 0}
                   </p>
                 </div>
               </div>
-              {/* Add more stats here later like streaks */}
+              <div className="flex items-center">
+                <div className="ml-4 space-y-1">
+                  <p className="text-sm font-medium leading-none">
+                    Current Streak
+                  </p>
+                  <p className="text-2xl font-bold">
+                    {data?.currentStreak || 0} days 🔥
+                  </p>
+                </div>
+              </div>
             </div>
           </CardContent>
         </Card>

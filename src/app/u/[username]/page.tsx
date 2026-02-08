@@ -28,10 +28,26 @@ export default async function PublicProfilePage({
               <p className="text-muted-foreground">@{user.username}</p>
             </div>
           </CardHeader>
-          <CardContent className="text-center">
-            <p className="text-sm text-muted-foreground">
+          <CardContent className="space-y-4">
+            <div className="text-center text-sm text-muted-foreground">
               This is a public profile on Chronos.
-            </p>
+            </div>
+            {user.goals.length > 0 && (
+                <div className="space-y-2">
+                    <h3 className="font-semibold text-center">Public Goals</h3>
+                    <div className="grid gap-2">
+                        {user.goals.map((goal, i) => (
+                            <div key={i} className="border rounded-lg p-3 flex items-center gap-2">
+                                <div className={`w-3 h-3 rounded-full ${goal.completed ? "bg-green-500" : "bg-gray-300"}`} />
+                                <div className="text-left">
+                                    <div className="font-medium text-sm">{goal.title}</div>
+                                    {goal.description && <div className="text-xs text-muted-foreground">{goal.description}</div>}
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            )}
           </CardContent>
         </Card>
       </div>

@@ -1,11 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { Plus, Trash, Check, Square } from "lucide-react";
+import { Plus, Trash, Check, Square, CalendarPlus } from "lucide-react";
 import { toast } from "sonner";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import confetti from "canvas-confetti";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -37,6 +38,12 @@ import {
 import { api } from "@/trpc/react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Skeleton } from "@/components/ui/skeleton";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 const goalSchema = z.object({
   title: z.string().min(1, "Title is required"),
@@ -47,7 +54,7 @@ type GoalFormValues = z.infer<typeof goalSchema>;
 
 export default function GoalsPage() {
   const [isCreateOpen, setIsCreateOpen] = useState(false);
-  const { data: goals, isLoading, refetch } = api.goal.getGoals.useQuery();
+  const { data: goals, isLoading } = api.goal.getGoals.useQuery();
 
   const utils = api.useUtils();
 
@@ -176,17 +183,65 @@ function GoalCard({ goal, onDelete }: { goal: any; onDelete: () => void }) {
   });
 
   const updateTask = api.goal.updateTask.useMutation({
-    onSuccess: () => void utils.goal.getGoals.invalidate(),
+    onSuccess: (updatedTask) => {
+        void utils.goal.getGoals.invalidate();
+
+        // Optimistic check for goal completion
+        // If the updated task was completed, check if all others are completed
+        if (updatedTask.completed) {
+            const allOthersCompleted = goal.tasks.every((t: any) =>
+                t.id === updatedTask.id ? true : t.completed
+            );
+
+            if (allOthersCompleted && goal.tasks.length > 0) {
+                 confetti({
+                    particleCount: 100,
+                    spread: 70,
+                    origin: { y: 0.6 }
+                });
+                toast.success("Goal Completed! 🎉");
+            }
+        }
+    },
   });
 
   const deleteTask = api.goal.deleteTask.useMutation({
       onSuccess: () => void utils.goal.getGoals.invalidate(),
   });
 
+  const scheduleTask = api.block.upsertBlock.useMutation({
+      onSuccess: () => {
+          toast.success("Task added to today's schedule");
+      }
+  });
+
   const handleAddTask = (e: React.FormEvent) => {
     e.preventDefault();
     if (!newTaskTitle.trim()) return;
     createTask.mutate({ goalId: goal.id, title: newTaskTitle });
+  };
+
+  const handleSchedule = (taskTitle: string) => {
+      // Create a block for today at next hour
+      const now = new Date();
+      // Round to next hour
+      now.setMinutes(0, 0, 0);
+      now.setHours(now.getHours() + 1);
+
+      const startHour = now.getHours();
+      const endHour = startHour + 1;
+
+      const start = `${startHour.toString().padStart(2, '0')}:00`;
+      const end = `${endHour.toString().padStart(2, '0')}:00`;
+
+      scheduleTask.mutate({
+          title: taskTitle,
+          startTime: start,
+          endTime: end,
+          date: new Date(),
+          type: 'task',
+          category: 'work'
+      });
   };
 
   return (
@@ -221,14 +276,32 @@ function GoalCard({ goal, onDelete }: { goal: any; onDelete: () => void }) {
               >
                 {task.title}
               </span>
-               <Button
-                variant="ghost"
-                size="icon"
-                className="h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
-                onClick={() => deleteTask.mutate({ id: task.id })}
-               >
-                  <Trash className="h-3 w-3 text-destructive" />
-               </Button>
+               <div className="opacity-0 group-hover:opacity-100 transition-opacity flex">
+                 <TooltipProvider>
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <Button
+                                variant="ghost"
+                                size="icon"
+                                className="h-6 w-6"
+                                onClick={() => handleSchedule(task.title)}
+                                title="Schedule for Today"
+                            >
+                                <CalendarPlus className="h-3 w-3" />
+                            </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>Schedule for Today</TooltipContent>
+                    </Tooltip>
+                 </TooltipProvider>
+                 <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-6 w-6"
+                    onClick={() => deleteTask.mutate({ id: task.id })}
+                 >
+                    <Trash className="h-3 w-3 text-destructive" />
+                 </Button>
+               </div>
             </div>
           ))}
         </div>
