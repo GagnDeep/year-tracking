@@ -47,3 +47,5 @@ yarn-error.log*
 /.next-dev/
 /.next-build/
 /.next-dist/
+/generated/prisma
+dev.db
