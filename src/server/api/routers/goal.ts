@@ -3,19 +3,25 @@ import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 
 export const goalRouter = createTRPCRouter({
-  getGoals: protectedProcedure.query(async ({ ctx }) => {
-    return ctx.db.goal.findMany({
-      where: { userId: ctx.session.user.id },
-      include: { tasks: true },
-      orderBy: { createdAt: "desc" },
-    });
-  }),
+  getGoals: protectedProcedure
+    .input(z.object({ showArchived: z.boolean().optional() }))
+    .query(async ({ ctx, input }) => {
+      return ctx.db.goal.findMany({
+        where: {
+            userId: ctx.session.user.id,
+            archived: input.showArchived ? true : false
+        },
+        include: { tasks: true },
+        orderBy: { createdAt: "desc" },
+      });
+    }),
 
   createGoal: protectedProcedure
     .input(
       z.object({
         title: z.string().min(1),
         description: z.string().optional(),
+        isPublic: z.boolean().optional(),
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -23,6 +29,7 @@ export const goalRouter = createTRPCRouter({
         data: {
           title: input.title,
           description: input.description,
+          isPublic: input.isPublic,
           userId: ctx.session.user.id,
         },
       });
@@ -36,6 +43,7 @@ export const goalRouter = createTRPCRouter({
         description: z.string().optional(),
         completed: z.boolean().optional(),
         isPublic: z.boolean().optional(),
+        archived: z.boolean().optional(),
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -46,6 +54,7 @@ export const goalRouter = createTRPCRouter({
           description: input.description,
           completed: input.completed,
           isPublic: input.isPublic,
+          archived: input.archived,
         },
       });
     }),

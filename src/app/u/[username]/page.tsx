@@ -3,6 +3,9 @@ import { api } from "@/trpc/server";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { Metadata } from "next";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { ArrowLeft } from "lucide-react";
 
 export async function generateMetadata({
   params,
@@ -32,7 +35,14 @@ export default async function PublicProfilePage({
     const user = await api.user.getPublicProfile({ username });
 
     return (
-      <div className="container flex flex-col items-center justify-center min-h-screen py-10 gap-8">
+      <div className="container flex flex-col items-center justify-center min-h-screen py-10 gap-8 relative">
+        <div className="absolute top-4 left-4">
+            <Link href="/dashboard">
+                <Button variant="outline" size="sm">
+                    <ArrowLeft className="mr-2 h-4 w-4" /> Back to Dashboard
+                </Button>
+            </Link>
+        </div>
         <Card className="w-full max-w-md">
           <CardHeader className="flex flex-col items-center gap-4">
             <Avatar className="h-24 w-24">

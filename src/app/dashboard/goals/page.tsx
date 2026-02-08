@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Plus, Trash, Check, Square, CalendarPlus, Pencil, Eye, EyeOff } from "lucide-react";
+import { Plus, Trash, Check, Square, CalendarPlus, Pencil, Eye, EyeOff, Archive, ArchiveRestore } from "lucide-react";
 import { toast } from "sonner";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
@@ -46,6 +46,7 @@ import {
 } from "@/components/ui/tooltip";
 import { Switch } from "@/components/ui/switch";
 import { Progress } from "@/components/ui/progress";
+import type { Metadata } from "next";
 
 const goalSchema = z.object({
   title: z.string().min(1, "Title is required"),
@@ -57,7 +58,9 @@ type GoalFormValues = z.infer<typeof goalSchema>;
 
 export default function GoalsPage() {
   const [isCreateOpen, setIsCreateOpen] = useState(false);
-  const { data: goals, isLoading } = api.goal.getGoals.useQuery();
+  const [showArchived, setShowArchived] = useState(false);
+
+  const { data: goals, isLoading } = api.goal.getGoals.useQuery({ showArchived });
 
   const utils = api.useUtils();
 
@@ -103,7 +106,19 @@ export default function GoalsPage() {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold tracking-tight">Goals</h2>
+        <div className="flex items-center gap-4">
+            <h2 className="text-2xl font-bold tracking-tight">Goals</h2>
+            <div className="flex items-center gap-2">
+                <Switch
+                    id="show-archived"
+                    checked={showArchived}
+                    onCheckedChange={setShowArchived}
+                />
+                <label htmlFor="show-archived" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                    Show Archived
+                </label>
+            </div>
+        </div>
         <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
           <DialogTrigger asChild>
             <Button>
@@ -185,7 +200,7 @@ export default function GoalsPage() {
       {goals?.length === 0 && (
         <div className="flex flex-col items-center justify-center h-64 text-muted-foreground border rounded-lg border-dashed">
            <TargetIcon className="h-10 w-10 mb-2 opacity-20" />
-           <p>No goals yet. Create one to get started!</p>
+           <p>No goals found.</p>
         </div>
       )}
     </div>
@@ -285,6 +300,10 @@ function GoalCard({ goal, onDelete }: { goal: any; onDelete: () => void }) {
       });
   };
 
+  const toggleArchive = () => {
+      updateGoal.mutate({ id: goal.id, archived: !goal.archived });
+  }
+
   return (
     <>
     <Card className="flex flex-col h-full group/card relative">
@@ -292,14 +311,18 @@ function GoalCard({ goal, onDelete }: { goal: any; onDelete: () => void }) {
         <div className="flex items-start justify-between">
           <div className="flex-1">
             <div className="flex items-center gap-2">
-                <CardTitle>{goal.title}</CardTitle>
+                <CardTitle className={goal.archived ? "text-muted-foreground line-through" : ""}>{goal.title}</CardTitle>
                 {goal.isPublic && <Eye className="h-3 w-3 text-muted-foreground" />}
+                {goal.archived && <Archive className="h-3 w-3 text-muted-foreground" />}
             </div>
             {goal.description && (
               <CardDescription>{goal.description}</CardDescription>
             )}
           </div>
           <div className="flex items-center gap-1 opacity-0 group-hover/card:opacity-100 transition-opacity absolute top-4 right-4 bg-background/80 rounded-md p-1 backdrop-blur-sm">
+             <Button variant="ghost" size="icon" className="h-8 w-8" onClick={toggleArchive} title={goal.archived ? "Restore" : "Archive"}>
+                {goal.archived ? <ArchiveRestore className="h-4 w-4" /> : <Archive className="h-4 w-4" />}
+             </Button>
              <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setIsEditOpen(true)}>
                 <Pencil className="h-4 w-4" />
              </Button>
@@ -366,17 +389,19 @@ function GoalCard({ goal, onDelete }: { goal: any; onDelete: () => void }) {
         </div>
       </CardContent>
       <CardFooter>
-        <form onSubmit={handleAddTask} className="flex w-full items-center gap-2">
-          <Input
-            placeholder="Add task..."
-            value={newTaskTitle}
-            onChange={(e) => setNewTaskTitle(e.target.value)}
-            className="h-8"
-          />
-          <Button type="submit" size="sm" variant="secondary" disabled={createTask.isPending}>
-            <Plus className="h-4 w-4" />
-          </Button>
-        </form>
+        {!goal.archived && (
+            <form onSubmit={handleAddTask} className="flex w-full items-center gap-2">
+            <Input
+                placeholder="Add task..."
+                value={newTaskTitle}
+                onChange={(e) => setNewTaskTitle(e.target.value)}
+                className="h-8"
+            />
+            <Button type="submit" size="sm" variant="secondary" disabled={createTask.isPending}>
+                <Plus className="h-4 w-4" />
+            </Button>
+            </form>
+        )}
       </CardFooter>
     </Card>
 

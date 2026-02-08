@@ -126,6 +126,10 @@ export default async function Home() {
           <p className="text-center text-sm leading-loose text-muted-foreground md:text-left">
             Built by Chronos.
           </p>
+          <div className="flex items-center gap-4 text-sm text-muted-foreground">
+             <Link href="/about" className="hover:underline">About</Link>
+             <Link href="https://github.com" target="_blank" className="hover:underline">GitHub</Link>
+          </div>
         </div>
       </footer>
     </div>
