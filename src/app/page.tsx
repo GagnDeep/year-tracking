@@ -54,6 +54,11 @@ export default async function Home() {
                 Start for Free <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
             </div>
+            {!session && (
+              <p className="text-sm text-muted-foreground">
+                No account required to try the demo. Sign in with any email (e.g. guest@chronos.app).
+              </p>
+            )}
           </div>
         </section>
         <section

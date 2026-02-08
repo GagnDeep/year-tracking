@@ -18,6 +18,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
+import { DailyQuote } from "@/components/daily-quote";
 
 export default function DashboardPage() {
   const [date, setDate] = useState<Date>(new Date());
@@ -25,6 +26,7 @@ export default function DashboardPage() {
 
   return (
     <div className="flex flex-col h-[calc(100vh-6rem)]">
+      <DailyQuote />
       <div className="flex items-center justify-between mb-4">
         <h1 className="text-2xl font-bold">
           Welcome back, {user?.name?.split(" ")[0] || "User"}

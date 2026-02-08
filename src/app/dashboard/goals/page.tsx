@@ -45,6 +45,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Switch } from "@/components/ui/switch";
+import { Progress } from "@/components/ui/progress";
 
 const goalSchema = z.object({
   title: z.string().min(1, "Title is required"),
@@ -240,6 +241,11 @@ function GoalCard({ goal, onDelete }: { goal: any; onDelete: () => void }) {
       }
   });
 
+  // Calculate Progress
+  const totalTasks = goal.tasks.length;
+  const completedTasks = goal.tasks.filter((t: any) => t.completed).length;
+  const progress = totalTasks > 0 ? (completedTasks / totalTasks) * 100 : 0;
+
   // Edit Goal Form
   const editForm = useForm<GoalFormValues>({
       resolver: zodResolver(goalSchema),
@@ -303,7 +309,16 @@ function GoalCard({ goal, onDelete }: { goal: any; onDelete: () => void }) {
           </div>
         </div>
       </CardHeader>
-      <CardContent className="flex-1 space-y-2">
+      <CardContent className="flex-1 space-y-4">
+        {totalTasks > 0 && (
+            <div className="space-y-1">
+                <div className="flex justify-between text-xs text-muted-foreground">
+                    <span>Progress</span>
+                    <span>{Math.round(progress)}%</span>
+                </div>
+                <Progress value={progress} className="h-2" />
+            </div>
+        )}
         <div className="space-y-2">
           {goal.tasks.map((task: any) => (
             <div key={task.id} className="flex items-center gap-2 group">

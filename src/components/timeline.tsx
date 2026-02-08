@@ -70,10 +70,14 @@ function SortableBlock({
       style={style}
       className={`group flex cursor-pointer items-center gap-3 rounded-md border p-3 text-sm transition-colors hover:border-primary/50 ${
         block.category === "work"
-          ? "bg-blue-50 dark:bg-blue-950/20"
+          ? "bg-blue-50 dark:bg-blue-950/20 border-blue-200 dark:border-blue-900"
           : block.category === "personal"
-            ? "bg-green-50 dark:bg-green-950/20"
-            : "bg-accent/50"
+            ? "bg-green-50 dark:bg-green-950/20 border-green-200 dark:border-green-900"
+            : block.category === "health"
+                ? "bg-red-50 dark:bg-red-950/20 border-red-200 dark:border-red-900"
+                : block.category === "deep_work"
+                    ? "bg-purple-50 dark:bg-purple-950/20 border-purple-200 dark:border-purple-900"
+                    : "bg-accent/50"
       }`}
       onClick={onClick}
     >
@@ -184,6 +188,11 @@ export function Timeline({ date }: { date: Date }) {
     const endTime = formData.get("endTime") as string;
     const category = formData.get("category") as string;
     const type = formData.get("type") as string;
+
+    if (startTime >= endTime) {
+        toast.error("Start time must be before end time");
+        return;
+    }
 
     upsertBlock.mutate({
       id: editingBlock?.id,
@@ -299,7 +308,9 @@ export function Timeline({ date }: { date: Date }) {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="work">Work</SelectItem>
+                    <SelectItem value="deep_work">Deep Work</SelectItem>
                     <SelectItem value="personal">Personal</SelectItem>
+                    <SelectItem value="health">Health</SelectItem>
                     <SelectItem value="other">Other</SelectItem>
                   </SelectContent>
                 </Select>

@@ -104,10 +104,18 @@ export default function SettingsPage() {
       toast.success("Data exported successfully.");
   };
 
+  const deleteAccount = api.user.deleteAccount.useMutation({
+      onSuccess: () => {
+          toast.success("Account deleted successfully.");
+          signOut({ callbackUrl: "/" });
+      },
+      onError: (error) => {
+          toast.error(error.message);
+      }
+  });
+
   const handleDeleteAccount = () => {
-      // Mock delete account
-      toast.error("Account deletion is simulated.");
-      signOut();
+      deleteAccount.mutate();
   };
 
   if (isLoading) {

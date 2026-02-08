@@ -37,10 +37,12 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { CommandMenu } from "@/components/command-menu";
 import { useGlobalShortcuts } from "@/hooks/use-global-shortcuts";
-import { Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff, HelpCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useLocalStorage } from "usehooks-ts";
+import { ShortcutsHelp } from "@/components/shortcuts-help";
+import { useState } from "react";
 
 interface DashboardLayoutClientProps {
   children: React.ReactNode;
@@ -86,11 +88,13 @@ export function DashboardLayoutClient({
 }: DashboardLayoutClientProps) {
   const pathname = usePathname();
   const [focusMode, setFocusMode] = useLocalStorage("chronos-focus-mode", false);
+  const [showShortcuts, setShowShortcuts] = useState(false);
   useGlobalShortcuts();
 
   return (
     <SidebarProvider>
       <CommandMenu />
+      <ShortcutsHelp open={showShortcuts} onOpenChange={setShowShortcuts} />
       {!focusMode && (
       <Sidebar collapsible="icon">
         <SidebarHeader className="flex items-center justify-between p-4">
@@ -173,6 +177,14 @@ export function DashboardLayoutClient({
         <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
            {!focusMode && <SidebarTrigger className="-ml-1" />}
            <div className="ml-auto flex items-center gap-2">
+             <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setShowShortcuts(true)}
+                title="Keyboard Shortcuts"
+             >
+                <HelpCircle className="h-4 w-4" />
+             </Button>
              <Button
                 variant="ghost"
                 size="icon"
