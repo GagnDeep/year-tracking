@@ -10,6 +10,7 @@ import canvasConfetti from "canvas-confetti";
 import { Button } from "@/components/ui/button";
 import { Timeline } from "@/components/Timeline";
 import Editor from "@/components/Editor";
+import { Schedule } from "@/components/Schedule";
 import { formatDate, parseDate } from "@/lib/date";
 import { api } from "@/trpc/react";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -89,44 +90,53 @@ export default function DailyPage() {
         </Button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 flex-1">
-        <div className="flex flex-col gap-4">
-            <div className="flex items-center justify-between">
-                <h3 className="text-xl font-semibold">Tasks</h3>
-                <Dialog open={open} onOpenChange={setOpen}>
-                    <DialogTrigger asChild>
-                        <Button variant="outline" size="sm">Add Task</Button>
-                    </DialogTrigger>
-                    <DialogContent>
-                        <DialogHeader>
-                            <DialogTitle>Add New Task</DialogTitle>
-                        </DialogHeader>
-                        <form onSubmit={handleCreateTask} className="flex flex-col gap-4">
-                            <Input
-                                placeholder="Task title..."
-                                value={newTaskTitle}
-                                onChange={(e) => setNewTaskTitle(e.target.value)}
-                                autoFocus
-                            />
-                            <Button type="submit" disabled={createTask.isPending}>
-                                {createTask.isPending ? "Creating..." : "Create Task"}
-                            </Button>
-                        </form>
-                    </DialogContent>
-                </Dialog>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 flex-1 h-full min-h-0">
+        {/* Left Column: Tasks & Schedule */}
+        <div className="flex flex-col gap-4 md:col-span-1 h-full overflow-hidden">
+            <div className="flex flex-col gap-4 flex-1 overflow-y-auto">
+                <div className="flex items-center justify-between">
+                    <h3 className="text-xl font-semibold">Tasks</h3>
+                    <Dialog open={open} onOpenChange={setOpen}>
+                        <DialogTrigger asChild>
+                            <Button variant="outline" size="sm">Add Task</Button>
+                        </DialogTrigger>
+                        <DialogContent>
+                            <DialogHeader>
+                                <DialogTitle>Add New Task</DialogTitle>
+                            </DialogHeader>
+                            <form onSubmit={handleCreateTask} className="flex flex-col gap-4">
+                                <Input
+                                    placeholder="Task title..."
+                                    value={newTaskTitle}
+                                    onChange={(e) => setNewTaskTitle(e.target.value)}
+                                    autoFocus
+                                />
+                                <Button type="submit" disabled={createTask.isPending}>
+                                    {createTask.isPending ? "Creating..." : "Create Task"}
+                                </Button>
+                            </form>
+                        </DialogContent>
+                    </Dialog>
+                </div>
+
+                {isTasksLoading ? (
+                    <div className="space-y-2">
+                        <Skeleton className="h-16 w-full" />
+                        <Skeleton className="h-16 w-full" />
+                        <Skeleton className="h-16 w-full" />
+                    </div>
+                ) : (
+                    <Timeline items={tasks || []} date={dateStr} />
+                )}
             </div>
 
-            {isTasksLoading ? (
-                <div className="space-y-2">
-                    <Skeleton className="h-16 w-full" />
-                    <Skeleton className="h-16 w-full" />
-                    <Skeleton className="h-16 w-full" />
-                </div>
-            ) : (
-                <Timeline items={tasks || []} date={dateStr} />
-            )}
+            <div className="h-1/3 min-h-[200px]">
+                <Schedule date={dateStr} />
+            </div>
         </div>
-        <div className="flex flex-col gap-4 h-full">
+
+        {/* Right Column: Journal */}
+        <div className="flex flex-col gap-4 h-full md:col-span-2">
             <h3 className="text-xl font-semibold">Journal</h3>
             <div className="flex-1 bg-card text-card-foreground shadow-sm h-full min-h-[500px]">
                  {isJournalLoading ? (
