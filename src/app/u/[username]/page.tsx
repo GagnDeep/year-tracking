@@ -2,6 +2,24 @@ import { notFound } from "next/navigation";
 import { api } from "@/trpc/server";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import type { Metadata } from "next";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ username: string }>;
+}): Promise<Metadata> {
+  const { username } = await params;
+
+  // Optimistically return metadata or fetch
+  // Since we fetch in component, we might double fetch unless we use cache() or React 18 request deduping which nextjs does.
+  // But trpc server calls are not auto-deduped the same way unless we use cache() in TRPC context or caller.
+
+  return {
+    title: `${username} | Chronos Profile`,
+    description: `Check out ${username}'s productivity profile on Chronos.`,
+  };
+}
 
 export default async function PublicProfilePage({
   params,

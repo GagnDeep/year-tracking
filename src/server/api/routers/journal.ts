@@ -1,5 +1,4 @@
 import { z } from "zod";
-
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 
 export const journalRouter = createTRPCRouter({
@@ -78,4 +77,11 @@ export const journalRouter = createTRPCRouter({
         },
       });
     }),
+
+  getAll: protectedProcedure.query(async ({ ctx }) => {
+    return ctx.db.journalEntry.findMany({
+      where: { userId: ctx.session.user.id },
+      orderBy: { date: "desc" },
+    });
+  }),
 });

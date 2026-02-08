@@ -7,6 +7,7 @@ import {
   Target,
   BarChart,
   LogOut,
+  Book,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -56,6 +57,11 @@ const items = [
     title: "Dashboard",
     url: "/dashboard",
     icon: LayoutDashboard,
+  },
+  {
+    title: "Journal",
+    url: "/dashboard/journal",
+    icon: Book,
   },
   {
     title: "Goals",
@@ -150,9 +156,14 @@ export function DashboardLayoutClient({
                     <LogOut className="mr-2 h-4 w-4" />
                     Log out
                   </DropdownMenuItem>
-                  {/* Theme Toggle - usually in command menu but adding here for visibility */}
                 </DropdownMenuContent>
               </DropdownMenu>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
+                <SidebarMenuButton onClick={() => setFocusMode(!focusMode)} tooltip="Toggle Focus Mode">
+                    {focusMode ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                    <span>Focus Mode</span>
+                </SidebarMenuButton>
             </SidebarMenuItem>
           </SidebarMenu>
         </SidebarFooter>

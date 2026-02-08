@@ -20,6 +20,20 @@ import { Switch } from "@/components/ui/switch";
 import { api } from "@/trpc/react";
 import { useEffect } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
+import Link from "next/link";
+import { ExternalLink, Download, Trash } from "lucide-react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { signOut } from "next-auth/react";
 
 const profileSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters."),
@@ -76,6 +90,26 @@ export default function SettingsPage() {
     updateProfile.mutate(data);
   }
 
+  const handleExport = () => {
+      // Mock export functionality
+      const data = JSON.stringify(user, null, 2);
+      const blob = new Blob([data], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "chronos-data.json";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      toast.success("Data exported successfully.");
+  };
+
+  const handleDeleteAccount = () => {
+      // Mock delete account
+      toast.error("Account deletion is simulated.");
+      signOut();
+  };
+
   if (isLoading) {
     return (
       <div className="space-y-6">
@@ -89,7 +123,7 @@ export default function SettingsPage() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8 pb-10">
       <div>
         <h3 className="text-lg font-medium">Profile</h3>
         <p className="text-sm text-muted-foreground">
@@ -173,11 +207,65 @@ export default function SettingsPage() {
               </FormItem>
             )}
           />
+
+          {user?.publicVisibility && user.username && (
+              <div className="flex items-center gap-2 text-sm text-muted-foreground p-4 border rounded-md bg-muted/20">
+                  <span>Your public profile is live at:</span>
+                  <Link href={`/u/${user.username}`} className="text-primary hover:underline flex items-center gap-1" target="_blank">
+                      /u/{user.username} <ExternalLink className="h-3 w-3" />
+                  </Link>
+              </div>
+          )}
+
           <Button type="submit" disabled={updateProfile.isPending}>
             {updateProfile.isPending ? "Updating..." : "Update profile"}
           </Button>
         </form>
       </Form>
+
+      <div className="border-t pt-8 space-y-4">
+          <h3 className="text-lg font-medium">Data & Privacy</h3>
+          <div className="flex flex-col gap-4">
+              <div className="flex items-center justify-between border rounded-lg p-4">
+                  <div>
+                      <h4 className="font-medium">Export Data</h4>
+                      <p className="text-sm text-muted-foreground">Download a copy of your personal data.</p>
+                  </div>
+                  <Button variant="outline" onClick={handleExport}>
+                      <Download className="h-4 w-4 mr-2" /> Export JSON
+                  </Button>
+              </div>
+
+              <div className="flex items-center justify-between border border-destructive/50 rounded-lg p-4 bg-destructive/5">
+                  <div>
+                      <h4 className="font-medium text-destructive">Delete Account</h4>
+                      <p className="text-sm text-muted-foreground">Permanently delete your account and all data.</p>
+                  </div>
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                        <Button variant="destructive">
+                            <Trash className="h-4 w-4 mr-2" /> Delete Account
+                        </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                        <AlertDialogHeader>
+                        <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                        <AlertDialogDescription>
+                            This action cannot be undone. This will permanently delete your account
+                            and remove your data from our servers.
+                        </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogAction onClick={handleDeleteAccount} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+                            Delete Account
+                        </AlertDialogAction>
+                        </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
+              </div>
+          </div>
+      </div>
     </div>
   );
 }

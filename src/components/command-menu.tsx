@@ -25,11 +25,21 @@ import {
   CommandList,
   CommandSeparator,
 } from "@/components/ui/command";
+import { api } from "@/trpc/react";
+import { useDebounce } from "use-debounce";
+import { format } from "date-fns";
 
 export function CommandMenu() {
   const [open, setOpen] = useState(false);
+  const [query, setQuery] = useState("");
+  const [debouncedQuery] = useDebounce(query, 300);
   const router = useRouter();
   const { setTheme } = useTheme();
+
+  const { data: searchResults } = api.search.search.useQuery(
+    { query: debouncedQuery },
+    { enabled: debouncedQuery.length > 0 }
+  );
 
   useEffect(() => {
     const down = (e: KeyboardEvent) => {
@@ -53,9 +63,38 @@ export function CommandMenu() {
          Press ⌘K
       </div>
       <CommandDialog open={open} onOpenChange={setOpen}>
-        <CommandInput placeholder="Type a command or search..." />
+        <CommandInput
+            placeholder="Type a command or search..."
+            value={query}
+            onValueChange={setQuery}
+        />
         <CommandList>
           <CommandEmpty>No results found.</CommandEmpty>
+          {searchResults && (
+            <>
+                <CommandGroup heading="Search Results">
+                    {searchResults.goals.map((goal) => (
+                        <CommandItem
+                            key={goal.id}
+                            onSelect={() => runCommand(() => router.push(`/dashboard/goals`))}
+                        >
+                            <Target className="mr-2 h-4 w-4" />
+                            <span>Goal: {goal.title}</span>
+                        </CommandItem>
+                    ))}
+                    {searchResults.journalEntries.map((entry) => (
+                        <CommandItem
+                            key={entry.id}
+                            onSelect={() => runCommand(() => router.push(`/dashboard/calendar?date=${format(entry.date, "yyyy-MM-dd")}`))}
+                        >
+                            <CalendarIcon className="mr-2 h-4 w-4" />
+                            <span>Journal: {format(entry.date, "MMM d")}</span>
+                        </CommandItem>
+                    ))}
+                </CommandGroup>
+                <CommandSeparator />
+            </>
+          )}
           <CommandGroup heading="Actions">
              <CommandItem
               onSelect={() => runCommand(() => router.push("/dashboard/goals"))} // Ideally open dialog

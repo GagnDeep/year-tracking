@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Plus, Trash, Check, Square, CalendarPlus } from "lucide-react";
+import { Plus, Trash, Check, Square, CalendarPlus, Pencil, Eye, EyeOff } from "lucide-react";
 import { toast } from "sonner";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
@@ -44,10 +44,12 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { Switch } from "@/components/ui/switch";
 
 const goalSchema = z.object({
   title: z.string().min(1, "Title is required"),
   description: z.string().optional(),
+  isPublic: z.boolean().default(false),
 });
 
 type GoalFormValues = z.infer<typeof goalSchema>;
@@ -78,6 +80,7 @@ export default function GoalsPage() {
     defaultValues: {
       title: "",
       description: "",
+      isPublic: false,
     },
   });
 
@@ -141,6 +144,23 @@ export default function GoalsPage() {
                     </FormItem>
                   )}
                 />
+                <FormField
+                  control={form.control}
+                  name="isPublic"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
+                      <div className="space-y-0.5">
+                        <FormLabel>Public Goal</FormLabel>
+                      </div>
+                      <FormControl>
+                        <Switch
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
                 <DialogFooter>
                   <Button type="submit" disabled={createGoal.isPending}>
                     {createGoal.isPending ? "Creating..." : "Create Goal"}
@@ -174,6 +194,7 @@ export default function GoalsPage() {
 function GoalCard({ goal, onDelete }: { goal: any; onDelete: () => void }) {
   const utils = api.useUtils();
   const [newTaskTitle, setNewTaskTitle] = useState("");
+  const [isEditOpen, setIsEditOpen] = useState(false);
 
   const createTask = api.goal.createTask.useMutation({
     onSuccess: () => {
@@ -185,14 +206,10 @@ function GoalCard({ goal, onDelete }: { goal: any; onDelete: () => void }) {
   const updateTask = api.goal.updateTask.useMutation({
     onSuccess: (updatedTask) => {
         void utils.goal.getGoals.invalidate();
-
-        // Optimistic check for goal completion
-        // If the updated task was completed, check if all others are completed
         if (updatedTask.completed) {
             const allOthersCompleted = goal.tasks.every((t: any) =>
                 t.id === updatedTask.id ? true : t.completed
             );
-
             if (allOthersCompleted && goal.tasks.length > 0) {
                  confetti({
                     particleCount: 100,
@@ -209,11 +226,33 @@ function GoalCard({ goal, onDelete }: { goal: any; onDelete: () => void }) {
       onSuccess: () => void utils.goal.getGoals.invalidate(),
   });
 
+  const updateGoal = api.goal.updateGoal.useMutation({
+      onSuccess: () => {
+          setIsEditOpen(false);
+          toast.success("Goal updated");
+          void utils.goal.getGoals.invalidate();
+      }
+  });
+
   const scheduleTask = api.block.upsertBlock.useMutation({
       onSuccess: () => {
           toast.success("Task added to today's schedule");
       }
   });
+
+  // Edit Goal Form
+  const editForm = useForm<GoalFormValues>({
+      resolver: zodResolver(goalSchema),
+      defaultValues: {
+          title: goal.title,
+          description: goal.description || "",
+          isPublic: goal.isPublic,
+      }
+  });
+
+  const onEditSubmit = (data: GoalFormValues) => {
+      updateGoal.mutate({ id: goal.id, ...data });
+  }
 
   const handleAddTask = (e: React.FormEvent) => {
     e.preventDefault();
@@ -222,15 +261,11 @@ function GoalCard({ goal, onDelete }: { goal: any; onDelete: () => void }) {
   };
 
   const handleSchedule = (taskTitle: string) => {
-      // Create a block for today at next hour
       const now = new Date();
-      // Round to next hour
       now.setMinutes(0, 0, 0);
       now.setHours(now.getHours() + 1);
-
       const startHour = now.getHours();
       const endHour = startHour + 1;
-
       const start = `${startHour.toString().padStart(2, '0')}:00`;
       const end = `${endHour.toString().padStart(2, '0')}:00`;
 
@@ -245,18 +280,27 @@ function GoalCard({ goal, onDelete }: { goal: any; onDelete: () => void }) {
   };
 
   return (
-    <Card className="flex flex-col h-full">
+    <>
+    <Card className="flex flex-col h-full group/card relative">
       <CardHeader>
         <div className="flex items-start justify-between">
-          <div>
-            <CardTitle>{goal.title}</CardTitle>
+          <div className="flex-1">
+            <div className="flex items-center gap-2">
+                <CardTitle>{goal.title}</CardTitle>
+                {goal.isPublic && <Eye className="h-3 w-3 text-muted-foreground" />}
+            </div>
             {goal.description && (
               <CardDescription>{goal.description}</CardDescription>
             )}
           </div>
-          <Button variant="ghost" size="icon" onClick={onDelete}>
-            <Trash className="h-4 w-4 text-destructive" />
-          </Button>
+          <div className="flex items-center gap-1 opacity-0 group-hover/card:opacity-100 transition-opacity absolute top-4 right-4 bg-background/80 rounded-md p-1 backdrop-blur-sm">
+             <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setIsEditOpen(true)}>
+                <Pencil className="h-4 w-4" />
+             </Button>
+             <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive" onClick={onDelete}>
+                <Trash className="h-4 w-4" />
+             </Button>
+          </div>
         </div>
       </CardHeader>
       <CardContent className="flex-1 space-y-2">
@@ -320,6 +364,67 @@ function GoalCard({ goal, onDelete }: { goal: any; onDelete: () => void }) {
         </form>
       </CardFooter>
     </Card>
+
+    <Dialog open={isEditOpen} onOpenChange={setIsEditOpen}>
+        <DialogContent>
+            <DialogHeader>
+                <DialogTitle>Edit Goal</DialogTitle>
+            </DialogHeader>
+            <Form {...editForm}>
+              <form onSubmit={editForm.handleSubmit(onEditSubmit)} className="space-y-4">
+                <FormField
+                  control={editForm.control}
+                  name="title"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Title</FormLabel>
+                      <FormControl>
+                        <Input {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={editForm.control}
+                  name="description"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Description</FormLabel>
+                      <FormControl>
+                        <Input {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={editForm.control}
+                  name="isPublic"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
+                      <div className="space-y-0.5">
+                        <FormLabel>Public Goal</FormLabel>
+                      </div>
+                      <FormControl>
+                        <Switch
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+                <DialogFooter>
+                  <Button type="submit" disabled={updateGoal.isPending}>
+                    {updateGoal.isPending ? "Saving..." : "Save Changes"}
+                  </Button>
+                </DialogFooter>
+              </form>
+            </Form>
+        </DialogContent>
+    </Dialog>
+    </>
   );
 }
 
