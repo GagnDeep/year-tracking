@@ -1,99 +1,113 @@
-import { useRef } from "react";
-import { DndContext, useDroppable, DragEndEvent } from "@dnd-kit/core";
-import { TimeBlock } from "@/lib/scheduler";
-import { DraggableTimeBlock } from "./time-block";
+"use client";
+
+import { useMemo } from "react";
+import { DndContext, DragEndEvent, DragOverlay, useSensor, useSensors, PointerSensor } from "@dnd-kit/core";
+import { TimeBlock as TimeBlockType } from "@/lib/scheduler";
+import { TimeBlockComponent } from "./time-block";
+import { format } from "date-fns";
 import { cn } from "@/lib/utils";
+import { Clock } from "lucide-react";
 
 interface TimelineProps {
-  blocks: (TimeBlock & { id: string; title?: string })[];
+  blocks: TimeBlockType[];
   onBlockMove: (id: string, newStartTime: Date) => void;
   onBlockCreate: (startTime: Date) => void;
+  onBlockDelete?: (id: string) => void;
 }
 
-const GRID_HEIGHT = 60; // px per hour
+const HOURS = Array.from({ length: 24 }, (_, i) => i);
+const PIXELS_PER_HOUR = 60;
 
-export function Timeline({ blocks, onBlockMove, onBlockCreate }: TimelineProps) {
-  const { setNodeRef } = useDroppable({
-    id: "timeline-droppable",
-  });
-
-  const containerRef = useRef<HTMLDivElement>(null);
+export function Timeline({ blocks, onBlockMove, onBlockCreate, onBlockDelete }: TimelineProps) {
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 8,
+      },
+    })
+  );
 
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, delta } = event;
-    const block = active.data.current?.block as TimeBlock;
-
+    const block = blocks.find((b) => b.id === active.id);
     if (!block) return;
 
     // Calculate new start time based on delta Y
-    // delta.y / GRID_HEIGHT = hours moved
-    const hoursMoved = delta.y / GRID_HEIGHT;
-    const minutesMoved = Math.round(hoursMoved * 60 / 15) * 15; // Snap to 15m
+    const minutesDelta = (delta.y / PIXELS_PER_HOUR) * 60;
+    const newStartTime = new Date(block.startTime.getTime() + minutesDelta * 60000);
 
-    const newStart = new Date(block.startTime.getTime() + minutesMoved * 60000);
+    // Snap to 15 mins
+    const roundedMinutes = Math.round(newStartTime.getMinutes() / 15) * 15;
+    newStartTime.setMinutes(roundedMinutes);
+    newStartTime.setSeconds(0);
+    newStartTime.setMilliseconds(0);
 
-    // Validate boundaries (00:00 - 24:00) handled by parent or server usually,
-    // but here we just pass the intention.
-
-    onBlockMove(active.id as string, newStart);
+    onBlockMove(block.id, newStartTime);
   };
 
-  const handleContainerClick = (e: React.MouseEvent) => {
-      // If clicking directly on container (not on a block)
-      if (e.target !== e.currentTarget) return;
-
+  const handleTimelineClick = (e: React.MouseEvent<HTMLDivElement>) => {
+      // Create block at clicked time
       const rect = e.currentTarget.getBoundingClientRect();
       const y = e.clientY - rect.top + e.currentTarget.scrollTop;
-      const hour = y / GRID_HEIGHT;
+      const hour = Math.floor(y / PIXELS_PER_HOUR);
+      const minute = Math.floor((y % PIXELS_PER_HOUR) / PIXELS_PER_HOUR * 60);
 
-      // Snap to nearest 30m or hour
-      const snappedHour = Math.floor(hour);
-      // const snappedMinutes = Math.round((hour - snappedHour) * 60 / 30) * 30;
-
-      // Basic implementation: Start of the hour clicked
-      const date = new Date(); // Need context date!
-      // Actually we assume the parent handles the "date" context.
-      // We pass back a Date object constructed from Today but with correct hours?
-      // No, this component should probably take the base date as prop.
-      // But let's assume we return just the time relative to epoch or similar,
-      // OR better, we pass just the hour offset and parent reconstructs.
-      // Let's pass a Date object using "today" as base, but parent overrides date part.
-
-      const clickTime = new Date();
-      clickTime.setHours(snappedHour, 0, 0, 0);
-
-      onBlockCreate(clickTime);
+      const startTime = new Date();
+      startTime.setHours(hour, minute, 0, 0);
+      onBlockCreate(startTime);
   };
 
+  const isEmpty = blocks.length === 0;
+
   return (
-    <DndContext onDragEnd={handleDragEnd}>
-      <div
-        ref={setNodeRef}
-        className="relative h-[1440px] border-l border-neutral-800 bg-neutral-900/20 overflow-hidden"
-        style={{ height: GRID_HEIGHT * 24 }}
-        onClick={handleContainerClick}
-      >
-        {/* Grid Lines */}
-        {Array.from({ length: 24 }).map((_, i) => (
-          <div
-            key={i}
-            className="absolute w-full border-t border-neutral-800 text-[10px] text-neutral-600 pl-1"
-            style={{ top: i * GRID_HEIGHT, height: GRID_HEIGHT }}
-          >
-            {i.toString().padStart(2, "0")}:00
-          </div>
-        ))}
+    <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
+      <div className="relative h-full overflow-y-auto bg-card select-none">
+        {isEmpty && (
+            <div className="absolute inset-0 flex flex-col items-center justify-center text-muted-foreground pointer-events-none z-0 opacity-50">
+                <Clock className="w-12 h-12 mb-2" />
+                <p>No tasks scheduled.</p>
+                <p className="text-xs">Click anywhere to add a block.</p>
+            </div>
+        )}
 
-        {/* Current Time Indicator (Visual only, position calculated externally or via CSS/JS) */}
+        <div
+            className="relative min-h-[1440px]"
+            style={{ height: HOURS.length * PIXELS_PER_HOUR }}
+            onClick={handleTimelineClick}
+        >
+          {/* Grid Lines */}
+          {HOURS.map((hour) => (
+            <div
+              key={hour}
+              className="absolute w-full border-t border-border flex items-center"
+              style={{ top: hour * PIXELS_PER_HOUR, height: PIXELS_PER_HOUR }}
+            >
+              <span className="w-12 text-right text-xs text-muted-foreground pr-2 -mt-[calc(100%-10px)]">
+                {format(new Date().setHours(hour, 0, 0, 0), "h a")}
+              </span>
+            </div>
+          ))}
 
-        {/* Blocks */}
-        {blocks.map((block) => (
-          <DraggableTimeBlock
-            key={block.id}
-            block={block}
-            gridHeight={GRID_HEIGHT}
-          />
-        ))}
+          {/* Blocks */}
+          {blocks.map((block) => {
+            const startMinutes = block.startTime.getHours() * 60 + block.startTime.getMinutes();
+            const endMinutes = block.endTime.getHours() * 60 + block.endTime.getMinutes();
+            const durationMinutes = endMinutes - startMinutes;
+
+            const top = (startMinutes / 60) * PIXELS_PER_HOUR;
+            const height = (durationMinutes / 60) * PIXELS_PER_HOUR;
+
+            return (
+              <TimeBlockComponent
+                key={block.id}
+                block={block}
+                height={Math.max(height, 20)} // Min height
+                top={top}
+                onDelete={onBlockDelete}
+              />
+            );
+          })}
+        </div>
       </div>
     </DndContext>
   );
