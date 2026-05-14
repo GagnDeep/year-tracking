@@ -15,10 +15,14 @@ import { calculateDailyStats, TimeBlock } from "@/lib/scheduler";
 import { toast } from "sonner";
 import { Breadcrumbs } from "@/components/layout/breadcrumbs";
 import { Button } from "@/components/ui/button";
-import { ChevronLeft, ChevronRight, Plus } from "lucide-react";
+import { ChevronLeft, ChevronRight, Plus, Calendar as CalendarIcon } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import confetti from "canvas-confetti";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Calendar } from "@/components/ui/calendar";
+import { useRouter } from "next/navigation";
 
 const MOODS = [
     { value: "great", label: "🤩", text: "Great" },
@@ -29,6 +33,7 @@ const MOODS = [
 ];
 
 export default function DayView({ date }: { date: string }) {
+  const router = useRouter();
   // 1. Validate Date
   const parsedDate = parse(date, "yyyy-MM-dd", new Date());
   const formattedDate = isValid(parsedDate) ? format(parsedDate, "EEEE, MMMM do, yyyy") : "Invalid Date";
@@ -57,11 +62,23 @@ export default function DayView({ date }: { date: string }) {
       }
   });
 
+   const deleteBlockMutation = api.timeline.deleteBlock.useMutation({
+      onSuccess: () => {
+          refetchBlocks();
+          toast.success("Block deleted");
+      },
+      onError: (err) => {
+          toast.error(err.message);
+      }
+  });
+
+
   // 3. Local State
   const [content, setContent] = useState("");
   const [productivityScore, setProductivityScore] = useState(0);
   const [mood, setMood] = useState("neutral");
   const [isInitialized, setIsInitialized] = useState(false);
+  const [hasConfettied, setHasConfettied] = useState(false);
 
   // 4. Initialize State from DB
   useEffect(() => {
@@ -97,6 +114,20 @@ export default function DayView({ date }: { date: string }) {
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedContent, debouncedScore, debouncedMood]);
+
+  // Confetti Logic
+  useEffect(() => {
+      if (productivityScore === 10 && !hasConfettied && isInitialized) {
+          confetti({
+              particleCount: 100,
+              spread: 70,
+              origin: { y: 0.6 }
+          });
+          setHasConfettied(true);
+      } else if (productivityScore < 10) {
+          setHasConfettied(false);
+      }
+  }, [productivityScore, hasConfettied, isInitialized]);
 
   // 6. Animation Logic
   const { transitionRect, setTransitionRect } = useLayout();
@@ -162,7 +193,7 @@ export default function DayView({ date }: { date: string }) {
       const durationMs = block.endTime.getTime() - block.startTime.getTime();
       const newEndTime = new Date(newStartTime.getTime() + durationMs);
 
-      // Update date part to match current day (prevent dragging to another day visually)
+      // Update date part to match current day
       newStartTime.setFullYear(parsedDate.getFullYear(), parsedDate.getMonth(), parsedDate.getDate());
       newEndTime.setFullYear(parsedDate.getFullYear(), parsedDate.getMonth(), parsedDate.getDate());
 
@@ -177,17 +208,22 @@ export default function DayView({ date }: { date: string }) {
   };
 
   const handleBlockCreate = (startTime: Date) => {
-      // Set correct date
       startTime.setFullYear(parsedDate.getFullYear(), parsedDate.getMonth(), parsedDate.getDate());
-      const endTime = new Date(startTime.getTime() + 60 * 60 * 1000); // 1 hour default
+      const endTime = new Date(startTime.getTime() + 60 * 60 * 1000);
 
       timelineMutation.mutate({
           date,
           startTime: startTime.toISOString(),
           endTime: endTime.toISOString(),
-          category: "Work", // Default
+          category: "Work",
           title: "New Task",
       });
+  };
+
+  const handleDateSelect = (d: Date | undefined) => {
+      if (d) {
+          router.push(`/dashboard/day/${format(d, "yyyy-MM-dd")}`);
+      }
   };
 
   return (
@@ -202,20 +238,37 @@ export default function DayView({ date }: { date: string }) {
                         <ChevronLeft className="h-4 w-4" />
                     </Link>
                 </Button>
-                <div>
-                    <h1 className="text-2xl font-bold tracking-tight">{formattedDate}</h1>
-                    <p className="text-muted-foreground text-sm">
-                        {monthProgress}% of {monthName} passed
-                    </p>
-                </div>
+
+                <Popover>
+                    <PopoverTrigger asChild>
+                        <Button variant="ghost" className="h-auto p-2 font-bold text-2xl tracking-tight hover:bg-muted">
+                           {formattedDate}
+                           <CalendarIcon className="ml-2 h-5 w-5 opacity-50" />
+                        </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                        <Calendar
+                            mode="single"
+                            selected={parsedDate}
+                            onSelect={handleDateSelect}
+                            initialFocus
+                        />
+                    </PopoverContent>
+                </Popover>
+
                 <Button variant="outline" size="icon" asChild>
                     <Link href={`/dashboard/day/${nextDate}`}>
                         <ChevronRight className="h-4 w-4" />
                     </Link>
                 </Button>
             </div>
-            <div className="text-sm text-muted-foreground/50 font-mono">
-               {journalMutation.isPending ? "Saving changes..." : "All changes saved"}
+            <div className="flex flex-col items-end">
+                 <p className="text-muted-foreground text-sm">
+                    {monthProgress}% of {monthName} passed
+                 </p>
+                <div className="text-xs text-muted-foreground/50 font-mono">
+                   {journalMutation.isPending ? "Saving changes..." : "All changes saved"}
+                </div>
             </div>
         </div>
       </div>
@@ -229,7 +282,6 @@ export default function DayView({ date }: { date: string }) {
             isSaving={journalMutation.isPending}
           />
 
-           {/* Sidebar Info moved here for mobile/better layout */}
            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                <Card className="bg-card border-border">
                     <CardHeader className="pb-2">
@@ -315,6 +367,7 @@ export default function DayView({ date }: { date: string }) {
                 blocks={blocks || []}
                 onBlockMove={handleBlockMove}
                 onBlockCreate={handleBlockCreate}
+                onBlockDelete={(id) => deleteBlockMutation.mutate({ id })}
             />
         </div>
       </div>

@@ -51,6 +51,7 @@ export const authRouter = createTRPCRouter({
       name: z.string().min(1).optional(),
       username: z.string().min(3).optional().nullable(),
       isPublic: z.boolean().optional(),
+      image: z.string().url().optional().nullable().or(z.literal("")),
     }))
     .mutation(async ({ ctx, input }) => {
       // Check username uniqueness if being updated
@@ -69,7 +70,10 @@ export const authRouter = createTRPCRouter({
       const updatedUser = await ctx.db.user.update({
         where: { id: ctx.session.user.id },
         data: {
-            ...input,
+            name: input.name,
+            username: input.username,
+            isPublic: input.isPublic,
+            image: input.image === "" ? null : input.image,
         },
       });
 
